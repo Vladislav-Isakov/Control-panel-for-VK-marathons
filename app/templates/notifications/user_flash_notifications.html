@@ -1,0 +1,271 @@
+{% if json_notifications != {} %}
+  {% if current_user.is_authenticated %}
+    {% if json_notifications['category'] == 'error' %}
+      {% if current_user.location_of_notifications.location == 'upper_left_corner' %}
+      <div class="toast-container position-fixed top-0 start-0 p-2">
+      {% elif current_user.location_of_notifications.location == 'top_to_center' %}
+      <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-2">
+      {% elif current_user.location_of_notifications.location == 'upper_right_corner' %}
+      <div class="toast-container position-fixed top-0 end-0 p-2">
+      {% elif current_user.location_of_notifications.location == 'middle_on_the_left' %}
+      <div class="toast-container position-fixed top-50 start-0 translate-middle-y p-2">
+      {% elif current_user.location_of_notifications.location == 'middle_in_the_center' %}
+      <div class="toast-container position-fixed top-50 start-50 translate-middle p-2">
+      {% elif current_user.location_of_notifications.location == 'middle_on_the_right' %}
+      <div class="toast-container position-fixed top-50 end-0 translate-middle-y p-2">
+      {% elif current_user.location_of_notifications.location == 'lower_left_corner' %}
+      <div class="toast-container position-fixed bottom-0 start-0 p-2">
+      {% elif current_user.location_of_notifications.location == 'down_the_center' %}
+      <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-2">
+      {% elif current_user.location_of_notifications.location == 'lower_right_corner' %}
+      <div class="toast-container position-fixed bottom-0 end-0 p-2">
+      {% elif current_user.location_of_notifications == None %}
+      <div class="toast-container position-fixed top-0 start-0 p-2">
+      {% endif %}
+          <div id="notify-error-alert" class="toast text-light border border-danger bg-dark" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header text-light border border-danger bg-dark">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell-fill rounded me-2" viewBox="0 0 16 16">
+                <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
+              </svg>
+              <strong class="me-auto">
+                Возникла ошибка
+              </strong>
+              <small></small>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="border border-danger">
+              <div class="toast-body">
+                <strong>{{ json_notifications['message'] }}</strong>
+              </div>
+              <div class="pt-5 position-relative" style="top: -10px;">
+                <div class="position-absolute bottom-0 start-50 translate-middle-x">
+                  <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">Закрыть</button>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+      <script>
+        var NotifyError = document.getElementById('notify-error-alert')
+        var Notify = new bootstrap.Toast(NotifyError)
+        Notify.show()
+        setTimeout(() => {
+          var notify = bootstrap.Toast.getOrCreateInstance('#notify-error-alert');
+          notify.hide();
+        }, 5000);
+      </script>
+    {% elif json_notifications['category'] == 'warning' %}
+      {% if current_user.location_of_notifications.location == 'upper_left_corner' %}
+      <div class="toast-container position-fixed top-0 start-0 p-2">
+      {% elif current_user.location_of_notifications.location == 'top_to_center' %}
+      <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-2">
+      {% elif current_user.location_of_notifications.location == 'upper_right_corner' %}
+      <div class="toast-container position-fixed top-0 end-0 p-2">
+      {% elif current_user.location_of_notifications.location == 'middle_on_the_left' %}
+      <div class="toast-container position-fixed top-50 start-0 translate-middle-y p-2">
+      {% elif current_user.location_of_notifications.location == 'middle_in_the_center' %}
+      <div class="toast-container position-fixed top-50 start-50 translate-middle p-2">
+      {% elif current_user.location_of_notifications.location == 'middle_on_the_right' %}
+      <div class="toast-container position-fixed top-50 end-0 translate-middle-y p-2">
+      {% elif current_user.location_of_notifications.location == 'lower_left_corner' %}
+      <div class="toast-container position-fixed bottom-0 start-0 p-2">
+      {% elif current_user.location_of_notifications.location == 'down_the_center' %}
+      <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-2">
+      {% elif current_user.location_of_notifications.location == 'lower_right_corner' %}
+      <div class="toast-container position-fixed bottom-0 end-0 p-2">
+      {% elif current_user.location_of_notifications == None %}
+      <div class="toast-container position-fixed top-0 start-0 p-2">
+      {% endif %}
+          <div id="notify-warning-alert" class="toast text-light border border-warning bg-dark" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header text-light border border-warning bg-dark">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell-fill rounded me-2" viewBox="0 0 16 16">
+                <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
+              </svg>
+              <strong class="me-auto">
+                Обратите внимание
+              </strong>
+              <small></small>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="border border-warning">
+              <div class="toast-body">
+                <strong>{{ json_notifications['message'] }}</strong>
+              </div>
+              <div class="pt-5 position-relative" style="top: -10px;">
+                <div class="position-absolute bottom-0 start-50 translate-middle-x">
+                  <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">Закрыть</button>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+      <script>
+        var NotifyWarning = document.getElementById('notify-warning-alert')
+        var Notify = new bootstrap.Toast(NotifyWarning)
+        Notify.show()
+        setTimeout(() => {
+          var notify = bootstrap.Toast.getOrCreateInstance('#notify-warning-alert');
+          notify.hide();
+        }, 5000);
+      </script>
+    {% else %}
+    {% if current_user.location_of_notifications.location == 'upper_left_corner' %}
+    <div class="toast-container position-fixed top-0 start-0 p-2">
+    {% elif current_user.location_of_notifications.location == 'top_to_center' %}
+    <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-2">
+    {% elif current_user.location_of_notifications.location == 'upper_right_corner' %}
+    <div class="toast-container position-fixed top-0 end-0 p-2">
+    {% elif current_user.location_of_notifications.location == 'middle_on_the_left' %}
+    <div class="toast-container position-fixed top-50 start-0 translate-middle-y p-2">
+    {% elif current_user.location_of_notifications.location == 'middle_in_the_center' %}
+    <div class="toast-container position-fixed top-50 start-50 translate-middle p-2">
+    {% elif current_user.location_of_notifications.location == 'middle_on_the_right' %}
+    <div class="toast-container position-fixed top-50 end-0 translate-middle-y p-2">
+    {% elif current_user.location_of_notifications.location == 'lower_left_corner' %}
+    <div class="toast-container position-fixed bottom-0 start-0 p-2">
+    {% elif current_user.location_of_notifications.location == 'down_the_center' %}
+    <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-2">
+    {% elif current_user.location_of_notifications.location == 'lower_right_corner' %}
+    <div class="toast-container position-fixed bottom-0 end-0 p-2">
+    {% elif current_user.location_of_notifications == None %}
+    <div class="toast-container position-fixed top-0 start-0 p-2">
+    {% endif %}
+        <div id="notify-info-alert" class="toast text-light border border-info bg-dark" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="toast-header text-light border border-info bg-dark">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell-fill rounded me-2" viewBox="0 0 16 16">
+              <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
+            </svg>
+            <strong class="me-auto">
+              Информация
+            </strong>
+            <small></small>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+          <div class="border border-info">
+            <div class="toast-body">
+              <strong>{{ json_notifications['message'] }}</strong>
+            </div>
+            <div class="pt-5 position-relative" style="top: -10px;">
+              <div class="position-absolute bottom-0 start-50 translate-middle-x">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">Закрыть</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    <script>
+      var NotifyInfo = document.getElementById('notify-info-alert')
+      var Notify = new bootstrap.Toast(NotifyInfo)
+      Notify.show()
+      setTimeout(() => {
+        var notify = bootstrap.Toast.getOrCreateInstance('#notify-info-alert');
+        notify.hide();
+      }, 5000);
+    </script>
+    {% endif %}
+  {% else %}
+    {% if json_notifications['category'] == 'error' %}
+    <div class="toast-container position-fixed top-0 start-0 p-2">
+      <div id="notify-error-alert" class="toast text-light border border-danger bg-dark" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header text-light border border-danger bg-dark">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell-fill rounded me-2" viewBox="0 0 16 16">
+            <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
+          </svg>
+          <strong class="me-auto">
+            Возникла ошибка
+          </strong>
+          <small></small>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="border border-danger">
+          <div class="toast-body">
+            <strong>{{ json_notifications['message'] }}</strong>
+          </div>
+          <div class="pt-5 position-relative" style="top: -10px;">
+            <div class="position-absolute bottom-0 start-50 translate-middle-x">
+              <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">Закрыть</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      var NotifyError = document.getElementById('notify-error-alert')
+      var Notify = new bootstrap.Toast(NotifyError)
+      Notify.show()
+      setTimeout(() => {
+        var notify = bootstrap.Toast.getOrCreateInstance('#notify-error-alert');
+        notify.hide();
+      }, 5000);
+    </script>
+    {% elif json_notifications['category'] == 'warning' %}
+      <div class="toast-container position-fixed top-0 start-0 p-2">
+          <div id="notify-warning-alert" class="toast text-light border border-warning bg-dark" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header text-light border border-warning bg-dark">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell-fill rounded me-2" viewBox="0 0 16 16">
+                <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
+              </svg>
+              <strong class="me-auto">
+                Обратите внимание
+              </strong>
+              <small></small>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="border border-warning">
+              <div class="toast-body">
+                <strong>{{ json_notifications['message'] }}</strong>
+              </div>
+              <div class="pt-5 position-relative" style="top: -10px;">
+                <div class="position-absolute bottom-0 start-50 translate-middle-x">
+                  <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">Закрыть</button>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+      <script>
+        var NotifyWarning = document.getElementById('notify-warning-alert')
+        var Notify = new bootstrap.Toast(NotifyWarning)
+        Notify.show()
+        setTimeout(() => {
+          var notify = bootstrap.Toast.getOrCreateInstance('#notify-warning-alert');
+          notify.hide();
+        }, 5000);
+      </script>
+    {% else %}
+      <div class="toast-container position-fixed top-0 start-0 p-2">
+        <div id="notify-info-alert" class="toast text-light border border-info bg-dark" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="toast-header text-light border border-info bg-dark">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell-fill rounded me-2" viewBox="0 0 16 16">
+              <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
+            </svg>
+            <strong class="me-auto">
+              Информация
+            </strong>
+            <small></small>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+          <div class="border border-info">
+            <div class="toast-body">
+              <strong>{{ json_notifications['message'] }}</strong>
+            </div>
+            <div class="pt-5 position-relative" style="top: -10px;">
+              <div class="position-absolute bottom-0 start-50 translate-middle-x">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">Закрыть</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script>
+        var NotifyInfo = document.getElementById('notify-info-alert')
+        var Notify = new bootstrap.Toast(NotifyInfo)
+        Notify.show()
+        setTimeout(() => {
+          var notify = bootstrap.Toast.getOrCreateInstance('#notify-info-alert');
+          notify.hide();
+        }, 5000);
+      </script>
+    {% endif %}
+  {% endif %}
+{% endif %}

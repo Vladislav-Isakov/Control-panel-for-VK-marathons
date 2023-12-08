@@ -1,0 +1,28 @@
+{% if list_tables == [] %}
+<div class="container-fluid bg-dark">
+    <div class="d-flex user-select-none pt-3">
+        <p class="pb-3 mb-0 text-center text-light fw-bold lh-sm border-bottom w-100">
+           Google таблицы не обнаружены, либо информация о них ещё не обновилась.
+        </p>
+    </div>
+</div>
+{% else %}
+<div class="row row-cols-1 row-cols-md-4 g-2">
+    {% for table in list_tables %}
+    <div class="col">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><a href="{{ table.link }}" class="text-decoration-none">{{ table.name }}</a></h5>
+                <p class="card-text">
+                </p>
+                <div class="d-flex justify-content-center">
+                </div>
+            </div>
+            <div class="card-footer">
+                <small class="text-body-secondary">Дата добавления: {{ table.time_of_addition }}</small>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}

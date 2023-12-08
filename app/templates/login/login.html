@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Авторизация</title>
+        <script src="{{ url_for('static', filename='js/bootstrap.bundle.js') }}"></script>
+        <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/login/login.css') }}" rel="stylesheet">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon/favicon-32x32.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon/favicon-16x16.png') }}">
+    </head>
+    <style>
+      .code-input {
+        width: 100%;
+        flex: 0 0 23%;
+        padding: 0;
+        margin: 0;
+        text-align: center;
+        min-height: 50px;
+        font-size: 2em;
+        box-shadow: none;
+        outline: none;
+      }
+    </style>
+    <body class="bg-dark">
+        <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+            <symbol id="check" viewBox="0 0 16 16">
+              <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+            </symbol>
+        </svg>
+        <div id="notifications"></div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script>
+          function pushget(){
+              $.ajax({
+                url: "/user_notifications",
+                method: "get",
+                dataType: "html",
+                async: true,
+                success: function(response) {
+                  if (response != "") {
+                    $("#notifications").html(response);
+                  }
+                  setTimeout(pushget, 1000);
+                },
+                error: function(xhr) {
+                  setTimeout(pushget, 1000);
+                },
+              });
+          };
+          pushget();
+        </script>
+        <main class="form-signin w-100 m-auto text-center">
+          <img class="mb-4" src="{{ url_for('static', filename='image/login/favicon-ico-fox.png') }}" alt="" width="72" height="72">
+          <h1 class="h3 mb-3 fw-normal d-flex justify-content-center">Авторизация</h1>
+            <div id="main-login-user">
+              <form id="login-user-form">
+                <div class="form-floating">
+                  <input type="text" class="form-control" id="user_account" required>
+                  <label>VK ID/Ссылка на профиль</label>
+                </div>
+                <button class="w-100 btn btn-lg btn-primary mt-2" type="submit">Получить код</button>
+              </form>
+            </div>
+
+            <p class="mt-5 mb-3 text-body-secondary d-flex justify-content-center">&copy; 2023–2024</p>
+
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+            <script>
+              $(document).ready(function () {
+                $("#login-user-form").submit(function () {
+                    // Получение ID формы
+                    var formID = $(this).attr('id');
+                    // Добавление решётки к имени ID
+                    var formNm = $('#' + formID);
+                    $.ajax({
+                      type: "POST",
+                      url: "/login",
+                      data: {'csrf_token': '{{ csrf_token() }}', 'method': 'getting_the_code', 'user_account': document.getElementById('user_account').value},
+                      success: function (response) {
+                        $("#main-login-user").html(response);
+                      },
+                      error: function () {
+                        // Вывод текста ошибки отправки
+                      }
+                    });
+                    return false;
+                });
+            });
+            </script>
+        </main>
+    </body>
+</html>

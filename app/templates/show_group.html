@@ -1,0 +1,303 @@
+{% extends "base.html" %}
+
+{% block main %}
+{% if group_data == [] %}
+    <div class="container-fluid bg-dark">
+        <div class="d-flex user-select-none pt-3">
+            <p class="pb-3 mb-0 text-center text-light fw-bold lh-sm border-bottom w-100">
+                Данные группы не обнаружены, либо информация ещё не обновилась.
+            </p>
+        </div>
+    </div>
+{% else %}
+    <div class="my-2 p-3 border border-primary rounded shadow-sm">
+        <h6 class="border-bottom pb-1 mb-0">
+            <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('index') }}" class="text-decoration-none" id="update_list_curator_groups" onclick="ClickButtonListCuratorGroups(this.id);">Мои группы</a></li>
+                    <li class="breadcrumb-item active text-light" aria-current="page">«{{ group_data[0][0]['name_group'] }}»</li>
+                </ol>
+            </nav>
+        </h6>
+        <div class="d-flex pt-3">
+            <img src="{{ group_data[0][0]['photo_group_200'] }}" width="92" height="92" class="bd-placeholder-img flex-shrink-0 me-2 rounded-circle" alt="...">
+            <div class="d-block">
+                <a href="{{ url_for('index') }}" class="text-decoration-none fw-bold">{{ group_data[0][0]['name_group'] }}</a>
+                <div class="text-wrap text-light user-select-none">
+                    {% if group_data[0][0]['google_table'] != [] %}
+                    <p class="mb-2 d-block fw-bold text-light text-decoration-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+                            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
+                        </svg>Google Таблица: <a class="btn btn-primary" href="{{ group_data[0][0]['google_table'][0]['link'] }}" role="button">Открыть</a>
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="my-2">
+        <div class="card text-center">
+            <div class="card-header">
+                <ul class="nav nav-tabs card-header-tabs">
+                    {% if group_data[1] != [] %}
+                    <li class="nav-item">
+                        <a class="btn nav-link" data-bs-toggle="collapse" href="#group_posts" role="button" aria-expanded="false" aria-controls="group_posts">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-newspaper" viewBox="0 0 16 16">
+                                <path d="M0 2.5A1.5 1.5 0 0 1 1.5 1h11A1.5 1.5 0 0 1 14 2.5v10.528c0 .3-.05.654-.238.972h.738a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 1 1 0v9a1.5 1.5 0 0 1-1.5 1.5H1.497A1.497 1.497 0 0 1 0 13.5v-11zM12 14c.37 0 .654-.211.853-.441.092-.106.147-.279.147-.531V2.5a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0-.5.5v11c0 .278.223.5.497.5H12z"/>
+                                <path d="M2 3h10v2H2V3zm0 3h4v3H2V6zm0 4h4v1H2v-1zm0 2h4v1H2v-1zm5-6h2v1H7V6zm3 0h2v1h-2V6zM7 8h2v1H7V8zm3 0h2v1h-2V8zm-3 2h2v1H7v-1zm3 0h2v1h-2v-1zm-3 2h2v1H7v-1zm3 0h2v1h-2v-1z"/>
+                            </svg>Посты
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="btn nav-link" data-bs-toggle="collapse" href="#group_posts" role="button" aria-expanded="false" aria-controls="group_posts">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-newspaper" viewBox="0 0 16 16">
+                                <path d="M0 2.5A1.5 1.5 0 0 1 1.5 1h11A1.5 1.5 0 0 1 14 2.5v10.528c0 .3-.05.654-.238.972h.738a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 1 1 0v9a1.5 1.5 0 0 1-1.5 1.5H1.497A1.497 1.497 0 0 1 0 13.5v-11zM12 14c.37 0 .654-.211.853-.441.092-.106.147-.279.147-.531V2.5a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0-.5.5v11c0 .278.223.5.497.5H12z"/>
+                                <path d="M2 3h10v2H2V3zm0 3h4v3H2V6zm0 4h4v1H2v-1zm0 2h4v1H2v-1zm5-6h2v1H7V6zm3 0h2v1h-2V6zM7 8h2v1H7V8zm3 0h2v1h-2V8zm-3 2h2v1H7v-1zm3 0h2v1h-2v-1zm-3 2h2v1H7v-1zm3 0h2v1h-2v-1z"/>
+                            </svg>Посты <span class="badge bg-secondary">ОШИБКА</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if group_data[3] != [] %}
+                    <li class="nav-item">
+                        <a class="btn nav-link" data-bs-toggle="collapse" href="#group_table" role="button" aria-expanded="false" aria-controls="group_table">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-spreadsheet-fill" viewBox="0 0 16 16">
+                                <path d="M6 12v-2h3v2H6z"/>
+                                <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM3 9h10v1h-3v2h3v1h-3v2H9v-2H6v2H5v-2H3v-1h2v-2H3V9z"/>
+                            </svg>Таблица
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <button class="btn nav-link" data-bs-toggle="collapse" href="#group_table" role="button" aria-expanded="false" aria-controls="group_table" disabled>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-spreadsheet-fill" viewBox="0 0 16 16">
+                                <path d="M6 12v-2h3v2H6z"/>
+                                <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM3 9h10v1h-3v2h3v1h-3v2H9v-2H6v2H5v-2H3v-1h2v-2H3V9z"/>
+                            </svg>Таблица <span class="badge bg-secondary">ОШИБКА</span>
+                        </button>
+                    </li>
+                    {% endif %}
+                    {% if group_data[2]['column_tasks'] == True %}
+                    <li class="nav-item dropdown">
+                        {% if group_data[3] != [] %}
+                        <button class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list-task" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M2 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5H2zM3 3H2v1h1V3z"/>
+                                <path d="M5 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM5.5 7a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 4a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9z"/>
+                                <path fill-rule="evenodd" d="M1.5 7a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5V7zM2 7h1v1H2V7zm0 3.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5H2zm1 .5H2v1h1v-1z"/>
+                            </svg>Задания
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                          <li><a class="dropdown-item" id="button-list-task-by-category-inspection" onclick="GetTasksByCategory({{ group_data[0][0]['group_id'] }}, 'inspection', this.id);" data-bs-toggle="collapse" href="#tasks_by_category" role="button" aria-expanded="false" aria-controls="tasks_by_category">Ожидают проверки</a></li>
+                          <li><a type="button" class="dropdown-item" id="button-list-task-by-category-execution" onclick="GetTasksByCategory({{ group_data[0][0]['group_id'] }}, 'execution', this.id);">Ожидают выполнения</a></li>
+                          <li><a type="button" class="dropdown-item" id="button-list-task-by-category-completed" onclick="GetTasksByCategory({{ group_data[0][0]['group_id'] }}, 'completed', this.id);">Выполненные</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item" href="#">О заданиях</a></li>
+                        </ul>
+                        {% else %}
+                        <button class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" disabled>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list-task" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M2 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5H2zM3 3H2v1h1V3z"/>
+                                <path d="M5 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM5.5 7a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 4a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9z"/>
+                                <path fill-rule="evenodd" d="M1.5 7a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5V7zM2 7h1v1H2V7zm0 3.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5H2zm1 .5H2v1h1v-1z"/>
+                            </svg>Задания <span class="badge bg-secondary">ОШИБКА</span>
+                        </button>
+                        {% endif %}
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="my-2">
+        {% if group_data[1] != [] %}
+        <div class="collapse" id="group_posts">
+            {% for post in group_data[1] %}
+            <div class="card text-center border-primary my-3">
+                <div class="card-header">
+                    <img src="{{ group_data[0][0]['photo_group_200'] }}" style="min-height: 30px; max-height: 80px;" class="img-thumbnail rounded float-start rounded-circle" alt="...">
+                    <h6 class="card-title text-center">
+                        {{ group_data[0][0]['name_group'] }}
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        {{ post['post_text']|safe }}
+                    </p>
+                    {% for attachment in post['post_attachments'] %}
+                        {% if attachment['link']['description'] == 'Статья' %}
+                            <a href="{{ attachment['link']['url'] }}" class="text-decoration-none">
+                                <div class="carousel slide">
+                                    <div class="carousel-inner">
+                                      <div class="carousel-item active">
+                                        <div class="position-relative">
+                                            <img src="{{ attachment['link']['photo']['sizes'][-1]['url'] }}" style="max-width: 100%; height: auto; filter: brightness(50%);" class="img-thumbnail rounded" alt="...">
+                                            <div class="position-absolute top-50 start-50 translate-middle">
+                                                <h5 style="text-align: center; color: #fff;">{{ attachment['link']['title'] }}</h5>
+                                            </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                </div>
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                    {#{{ post['post_attachments'] }}#}
+                </div>
+                <div class="card-footer text-body-secondary">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar2-date-fill" viewBox="0 0 16 16">
+                                <path d="M9.402 10.246c.625 0 1.184-.484 1.184-1.18 0-.832-.527-1.23-1.16-1.23-.586 0-1.168.387-1.168 1.21 0 .817.543 1.2 1.144 1.2z"/>
+                                <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zm9.954 3H2.545c-.3 0-.545.224-.545.5v1c0 .276.244.5.545.5h10.91c.3 0 .545-.224.545-.5v-1c0-.276-.244-.5-.546-.5zm-4.118 9.79c1.258 0 2-1.067 2-2.872 0-1.934-.781-2.668-1.953-2.668-.926 0-1.797.672-1.797 1.809 0 1.16.824 1.77 1.676 1.77.746 0 1.23-.376 1.383-.79h.027c-.004 1.316-.461 2.164-1.305 2.164-.664 0-1.008-.45-1.05-.82h-.684c.047.64.594 1.406 1.703 1.406zm-2.89-5.435h-.633A12.6 12.6 0 0 0 4.5 8.16v.695c.375-.257.969-.62 1.258-.777h.012v4.61h.675V7.354z"/>
+                            </svg> {{ post['post_date_of_publication'] }}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-hearts" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015Zm6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343ZM7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358Z"/>
+                            </svg> {{ post['post_count_likes'] }}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-dots-fill" viewBox="0 0 16 16">
+                                <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4.414a1 1 0 0 0-.707.293L.854 15.146A.5.5 0 0 1 0 14.793V2zm5 4a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                            </svg> {{ post['post_count_comments'] }}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-reply-fill" viewBox="0 0 16 16">
+                                <path d="M5.921 11.9 1.353 8.62a.719.719 0 0 1 0-1.238L5.921 4.1A.716.716 0 0 1 7 4.719V6c1.5 0 6 0 7 8-2.5-4.5-7-4-7-4v1.281c0 .56-.606.898-1.079.62z"/>
+                            </svg> {{ post['post_count_reposts'] }}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                                <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                            </svg> {{ post['post_count_views'] }}
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" id="button_get_comments_{{ post['post_id'] }}" onclick="GetComments({{ group_data[0][0]['group_id'] }}, {{ post['post_id'] }}, 1)" data-bs-target="#comments_under_the_post_{{ post['post_id'] }}" aria-expanded="false" aria-controls="comments_under_the_post_{{ post['post_id'] }}">
+                                Комментарии
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="collapse" id="comments_under_the_post_{{ post['post_id'] }}">
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% if group_data[3] != [] %}
+        <div class="collapse text-light" id="group_table">
+            {% for page in group_data[3][1] %}
+                {% if loop.index0 == 0 %}<div class="collapse show" id="page-{{ page['sheetId'] }}">{% else %}<div class="collapse" id="page-{{ page['sheetId'] }}">{% endif %}
+                    {% set iteration_value_to_stop_column = ((page['gridProperties']['columnCount'] / 100) * 25)|round|int %}
+                    {% set iteration_value_to_stop_row = ((page['gridProperties']['rowCount'] / 100) * 5)|round|int %}
+                    <div class="collapse show" id="page-{{ page['sheetId'] }}">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">&nbsp;</th>
+                                        {% for character in page['gridAlphabet'] %}
+                                            <th class="text-light text-center">{{ character }}</th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for row in range(1, page['gridProperties']['rowCount']+1) %}
+                                        {% set row_index0 = loop.index0 %}
+                                        {# отрисовка строк в зависимости от наличия значений в строках #}
+                                        {% if page['values'][row_index0] is defined %}
+                                            <tr>
+                                                <th scope="row" class="text-light">{{ loop.index }}</th>
+                                                {% for character in page['gridAlphabet'] %}
+                                                    {% if page['values'][row_index0][loop.index0] is defined %}
+                                                        {# в ячейке в колонке при итерации есть значение #}
+                                                        <td class="text-light">
+                                                            <div class="table-input-value-in-cell-{{ page['sheetId'] }}-{{character}}-{{row}} text-center overflow-hidden" tabindex="0" onblur="ChangingValueOfString({{ page['sheetId'] }}, '{{ page['title'] }}', {{ row }}, '{{ character }}', '{{ page['values'][row_index0][loop.index0] }}')" style="-webkit-user-modify: read-write; font-size: 13px; font-weight: normal; font-family: Arial; font-style: normal; text-decoration-skip-ink: none; min-width: 94px; max-width: 510px;" dir="ltr" aria-label="F9">
+                                                                <span class="text-light text-center" style="font-size:13px;font-weight:normal;text-decoration:none;font-family:'Arial';font-style:normal;text-decoration-skip-ink:none;">{{ page['values'][row_index0][loop.index0] }}</span>
+                                                            </div>
+                                                        </td>
+                                                    {% else %}
+                                                        {# в ячейке в колонке при итерации нет значения #}
+                                                        <td class="text-light">
+                                                            <div class="table-input-value-in-cell-{{ page['sheetId'] }}-{{character}}-{{row}} text-center" tabindex="0" onblur="ChangingValueOfString({{ page['sheetId'] }}, '{{ page['title'] }}', {{ row }}, '{{ character }}', '')" style="-webkit-user-modify: read-write; font-size: 13px; font-weight: normal; font-family: Arial; font-style: normal; text-decoration-skip-ink: none;  min-width: 94px; max-width: 510px;" dir="ltr" aria-label="F9">
+                                                                <span class="text-light text-center" style="font-size:13px;font-weight:normal;text-decoration:none;font-family:'Arial';font-style:normal;text-decoration-skip-ink:none;"></span>
+                                                            </div>
+                                                        </td>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </tr>
+                                        {% elif page['values'][row_index0] is undefined %}
+                                            {% if loop.index <= iteration_value_to_stop_row %}
+                                                <tr>
+                                                    <th scope="row" class="text-light">{{ loop.index }}</th>
+                                                    {% for character in page['gridAlphabet'] %}
+                                                        {# значение ячейки в строке если нет данных #}
+                                                        <td class="text-light">
+                                                            <div class="table-input-value-in-cell-{{ page['sheetId'] }}-{{character}}-{{row}} text-center" tabindex="0" onblur="ChangingValueOfString({{ page['sheetId'] }}, '{{ page['title'] }}', {{ row }}, '{{ character }}', '')" style="-webkit-user-modify: read-write; font-size: 13px; font-weight: normal; font-family: Arial; font-style: normal; text-decoration-skip-ink: none;  min-width: 94px; max-width: 510px;" dir="ltr" aria-label="F9">
+                                                                <span class="text-light text-center" style="font-size:13px;font-weight:normal;text-decoration:none;font-family:'Arial';font-style:normal;text-decoration-skip-ink:none;"></span>
+                                                            </div>
+                                                        </td>
+                                                    {% endfor %}
+                                                </tr>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            <div role="navigation" aria-label="Панель листов">
+                <ul class="nav nav-pills mb-3 rounded justify-content-center" id="pills-tab" role="tablist" style="background-color: #fff; position:fixed; bottom:0; z-index: 100; max-width: 1580px;">
+                    {% for page in group_data[3][1] %}
+                    <li class="nav-item" role="presentation">
+                        {% if loop.index0 == 0 %}
+                            <div class="btn-group dropup">
+                                <button type="button" role="tab" class="nav-link active" {% if page['tabColorStyle'] != None %} style="border: 2px solid; border-color: rgb({{ page['tabColorStyle']['rgbColor']['red'] * 255|round|int }}, {{ page['tabColorStyle']['rgbColor']['green'] * 255|round|int }}, {{ page['tabColorStyle']['rgbColor']['blue'] * 255|round|int }});"{% endif %} data-bs-toggle="pill" aria-expanded="false" data-bs-target="#page-{{ page['sheetId'] }}" aria-controls="page-{{ page['sheetId'] }}" aria-selected="true">
+                                    {{ page['title'] }}
+                                </button>
+                                <button type="button" class="nav-link dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-dark">
+                                </ul>
+                            </div>
+                        {% else %}
+                            <div class="btn-group dropup">
+                                <button type="button" role="tab" class="nav-link" {% if page['tabColorStyle'] != None %} style="border: 2px solid; border-color: rgb({{ page['tabColorStyle']['rgbColor']['red'] * 255|round|int }}, {{ page['tabColorStyle']['rgbColor']['green'] * 255|round|int }}, {{ page['tabColorStyle']['rgbColor']['blue'] * 255|round|int }});"{% endif %} data-bs-toggle="pill" data-bs-target="#page-{{ page['sheetId'] }}" aria-controls="page-{{ page['sheetId'] }}" aria-selected="false">
+                                    {{ page['title'] }}
+                                </button>
+                                <button type="button" class="nav-link dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-dark">
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+        <script>
+            function ChangingValueOfString(sheetId, page, row, character, initial_value){
+                cell_id = ".table-input-value-in-cell" + "-" + sheetId + "-" + character + "-" + row
+                if (initial_value == document.querySelector(cell_id).textContent.trim()) {
+                    return;
+                }
+                cell_value = document.querySelector(cell_id).textContent.trim()
+                $.ajax({
+                    type: "POST",
+                    url: '/edit_cell_value',
+                    data: {'csrf_token': '{{ csrf_token() }}', 'group_id': '{{ group_data[2]["group_id"] }}', 'table_id': '{{ group_data[2]["table_id"] }}', 'page': page, 'sheetId': sheetId, 'cell': character + row, 'value': cell_value},
+                    beforeSend: function () {
+                        $(cell_id).html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Изменение...');
+                    },
+                    success: function () {
+                        setTimeout(function() {
+                            document.querySelector(cell_id).textContent = cell_value;
+                        }, 500);
+                    }
+                });
+                return false;
+            }
+        </script>
+        <div class="collapse" id="tasks_by_category">
+        </div>
+    </div>
+{% endif %}
+{% endblock main %}

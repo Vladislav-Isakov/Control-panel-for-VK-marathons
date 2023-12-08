@@ -1,0 +1,216 @@
+{% if list_users == [] %}
+<div class="container-fluid bg-dark">
+    <div class="d-flex user-select-none pt-3">
+        <p class="pb-3 mb-0 text-center text-light fw-bold lh-sm border-bottom w-100">
+           Пользователи с правами не обнаружены, либо информация о них ещё не обновилась.
+        </p>
+    </div>
+</div>
+{% else %}
+    <div class="row row-cols-1 row-cols-md-4 g-2">
+        {% for user in list_users %}
+        <div class="col">
+            <div class="card">
+                <img src="{{ user.photo_200 }}" width="100" class="img-thumbnail rounded float-start rounded-circle" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title"><a href="https://vk.com/id{{ user.vk_id }}" class="text-decoration-none">{{ user.first_name }} {{ user.last_name }}</a></h5>
+                    <p class="card-text">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-rolodex" viewBox="0 0 16 16">
+                            <path d="M8 9.05a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
+                            <path d="M1 1a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h.5a.5.5 0 0 0 .5-.5.5.5 0 0 1 1 0 .5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5.5.5 0 0 1 1 0 .5.5 0 0 0 .5.5h.5a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H6.707L6 1.293A1 1 0 0 0 5.293 1H1Zm0 1h4.293L6 2.707A1 1 0 0 0 6.707 3H15v10h-.085a1.5 1.5 0 0 0-2.4-.63C11.885 11.223 10.554 10 8 10c-2.555 0-3.886 1.224-4.514 2.37a1.5 1.5 0 0 0-2.4.63H1V2Z"/>
+                        </svg>
+                        Права: {% if user.access_name == 'superuser' %}Суперпользователь{% elif user.access_name == 'administrator' %}Администратор{% elif user.access_name == 'redactor' %}Редактор{% elif user.access_name == 'moderator' %}Модератор{% elif user.access_name == 'user' %}Пользователь{% endif %}
+                        <br />
+                    </p>
+                    <div class="d-flex justify-content-center">
+                      <button type="button" id="granting_button_user_id" value="{{ user.user_id }}" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal_granting_access_rights_in_the_panel_id">
+                          Изменить права
+                      </button>
+                      <button type="button" id="revocation_button_user_id" value="{{ user.user_id }}" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modal_revocation_of_access_rights_in_the_panel_id">
+                          Отозвать права
+                      </button>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <small class="text-body-secondary">Последний онлайн: {{ user.last_seen }}</small>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% if current_user.access_panel is defined %}
+      {% if current_user.access_panel.access is defined %}
+        {% if current_user.access_panel.access.access_name is defined and current_user.access_panel.access.access_name != 'redactor' and current_user.access_panel.access.access_name != 'moderator' and current_user.access_panel.access.access_name != 'user' %}
+          <div class="modal fade" id="modal_granting_access_rights_in_the_panel_id" tabindex="-1" aria-labelledby="access_rights_in_the_panel_id" aria-hidden="true" data-bs-theme="dark">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5 text-decoration-none" id="access_rights_in_the_panel_id">Выдача прав пользователю в панели управления</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form_granting_access_rights_in_the_panel_id">
+                        <div class="mb-3" style="margin:0 auto;">
+                          <label for="access-rights" class="form-label text-white">Права доступа к панели:</label>
+                          <select class="form-select bg-dark-subtle" id="access_name" style="text-align: center;" required>
+                            {% if current_user.access_panel is defined %}
+                              {% if current_user.access_panel.access is defined %}
+                                {% if current_user.access_panel.access.access_name is defined %}
+                                  {% if current_user.access_panel.access.access_name == 'superuser' %}
+                                    <option value="superuser" selected>Суперпользователь</option>
+                                    <option value="administrator">Администратор</option>
+                                    <option value="redactor">Редактор</option>
+                                    <option value="moderator">Модератор</option>
+                                    <option value="user">Пользователь</option>
+                                  {% elif current_user.access_panel.access.access_name == 'administrator' %}
+                                    <option value="redactor">Редактор</option>
+                                    <option value="moderator">Модератор</option>
+                                    <option value="user">Пользователь</option>
+                                  {% elif current_user.access_panel.access.access_name == 'redactor' %}
+                                    <option value="moderator">Модератор</option>
+                                    <option value="user">Пользователь</option>
+                                  {% endif %}
+                                {% endif %}
+                              {% endif %}
+                            {% endif %}
+                          </select>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                          <button type="submit" class="btn btn-outline-success" id="form_granting_access_rights_in_the_panel_button_submit_id">Выдать</button>
+                        </div>
+                    </form>
+                    <script>
+                        let buttons_granting_access = document.querySelectorAll('button[id^="granting_button_user_id"]');
+                        for(let button of buttons_granting_access){
+                            button.addEventListener('click', function() {
+                                localStorage.granting_access = JSON.stringify({user_id: button.value});
+                            })
+                        }
+                    </script>
+                    <script>
+                        $(document).ready(function () {
+                          $("#form_granting_access_rights_in_the_panel_id").submit(function () {
+                              // Получение ID формы
+                              var formID = $(this).attr('id');
+                              // Добавление решётки к имени ID
+                              var formNm = $('#' + formID);
+                              let user = JSON.parse(localStorage.granting_access);
+                              let user_id = user.user_id;
+                              delete localStorage.granting_access;
+                              $.ajax({
+                                  type: "POST",
+                                  url: '/access_rights_in_the_panel',
+                                  data: {'csrf_token': '{{ csrf_token() }}', 'method': 'granting_access_id', 'user_id': user_id, 'access_name': document.getElementById("access_name").value},
+                                  beforeSend: function () {
+                                    $("#form_granting_access_rights_in_the_panel_button_submit_id").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Выдаю права...');
+                                  },
+                                  success: function () {
+                                    $("#form_granting_access_rights_in_the_panel_button_submit_id").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Права выданы');
+                                    setTimeout(function() {
+                                      $("#form_granting_access_rights_in_the_panel_button_submit_id").html('Выдать');
+                                    }, 500);
+                                    $("#modal_granting_access_rights_in_the_panel_id").modal('hide');
+                                    $('.modal-backdrop').remove();
+                                    $.ajax({
+                                        url: "/users_with_rights",
+                                        type: "get",
+                                        dataType: "html",
+                                        success: function(response) {
+                                          $("#base_main").html(response);
+                                        }
+                                    });
+                                    return false;
+                                  },
+                                  error: function (error_msg) {
+                                    // Вывод текста ошибки отправки
+                                    $("#form_granting_access_rights_in_the_panel_button_submit_id").html('<span class="spinner-grow spinner-grow-sm text-danger" role="status" aria-hidden="true"></span>Ошибка выдачи прав');
+                                    setTimeout(function() {
+                                      $("#form_granting_access_rights_in_the_panel_button_submit_id").html('Выдать');
+                                    }, 2500);
+                                  }
+                              });
+                              return false;
+                          });
+                      });
+                    </script>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="modal_revocation_of_access_rights_in_the_panel_id" tabindex="-1" aria-labelledby="revocation_of_access_rights_in_the_panel_id" aria-hidden="true" data-bs-theme="dark">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5 text-decoration-none" id="revocation_of_access_rights_in_the_panel_id">Отзыв прав у пользователя в панели управления</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form_revocation_of_access_rights_in_the_panel_id">
+                        <div class="text-end">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                          <button type="submit" class="btn btn-outline-danger" id="form_revocation_of_access_rights_in_the_panel_button_submit_id">Отозвать</button>
+                        </div>
+                    </form>
+                    <script>
+                        let buttons_revocation_of_access = document.querySelectorAll('button[id^="revocation_button_user_id"]');
+                        for(let button of buttons_revocation_of_access){
+                            button.addEventListener('click', function() {
+                                localStorage.revocation_of_access = JSON.stringify({user_id: button.value});
+                            })
+                        }
+                    </script>
+                    <script>
+                        $(document).ready(function () {
+                          $("#form_revocation_of_access_rights_in_the_panel_id").submit(function () {
+                              // Получение ID формы
+                              var formID = $(this).attr('id');
+                              // Добавление решётки к имени ID
+                              var formNm = $('#' + formID);
+                              let user = JSON.parse(localStorage.revocation_of_access);
+                              let user_id = user.user_id;
+                              delete localStorage.revocation_of_access;
+                              $.ajax({
+                                  type: "POST",
+                                  url: '/access_rights_in_the_panel',
+                                  data: {'csrf_token': '{{ csrf_token() }}', 'method': 'revocation_of_access_id', 'user_id': user_id},
+                                  beforeSend: function () {
+                                    $("#form_revocation_of_access_rights_in_the_panel_button_submit_id").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Отзываю права...');
+                                  },
+                                  success: function () {
+                                    $("#form_revocation_of_access_rights_in_the_panel_button_submit_id").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Права отозваны');
+                                    setTimeout(function() {
+                                      $("#form_revocation_of_access_rights_in_the_panel_button_submit_id").html('Отозвать');
+                                    }, 500);
+                                    $("#modal_revocation_of_access_rights_in_the_panel_id").modal('hide');
+                                    $('.modal-backdrop').remove();
+                                    $.ajax({
+                                        url: "/users_with_rights",
+                                        type: "get",
+                                        dataType: "html",
+                                        success: function(response) {
+                                          $("#base_main").html(response);
+                                        }
+                                    });
+                                    return false;
+                                  },
+                                  error: function (error_msg) {
+                                    // Вывод текста ошибки отправки
+                                    $("#form_revocation_of_access_rights_in_the_panel_button_submit_id").html('<span class="spinner-grow spinner-grow-sm text-danger" role="status" aria-hidden="true"></span>Ошибка отзыва прав');
+                                    setTimeout(function() {
+                                      $("#form_revocation_of_access_rights_in_the_panel_button_submit_id").html('Отозвать');
+                                    }, 2500);
+                                  }
+                              });
+                              return false;
+                          });
+                      });
+                    </script>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      {% endif %}
+    {% endif %}
+{% endif %}

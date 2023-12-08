@@ -1,0 +1,278 @@
+{% if list_groups == [] %}
+<div class="container-fluid bg-dark">
+  <div class="d-flex user-select-none pt-3">
+    <p class="pb-3 mb-0 text-center text-light fw-bold lh-sm border-bottom w-100">
+      Распределённые кураторы по группам не обнаружены, либо информация о них ещё не обновилась.
+    </p>
+  </div>
+</div>
+{% else %}
+<div class="row row-cols-1 row-cols-md-1 g-2">
+    <div class="accordion" id="accordionCuratorsInMarathonHroups">
+      {% for group in list_groups %}
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button" type="button" id="marathon_group_button" value="{{ group['id'] }}" data-bs-toggle="collapse" data-bs-target="#marathon_group{{ group['id'] }}" aria-expanded="true" aria-controls="marathon_group{{ group['id'] }}">
+            <img src="{{ group.photo_group_200 }}" width="60" class="img-thumbnail rounded float-start rounded-circle" alt="marathon_group_{{ group['group_id'] }}">
+            <a href="https://vk.com/club{{ group.group_id }}" class="text-decoration-none fw-bold">{{ group.name_group }}</a>
+          </button>
+        </h2>
+        <div id="marathon_group{{ group['id'] }}" class="accordion-collapse collapse" data-bs-parent="#accordionCuratorsInMarathonHroups">
+          <div class="accordion-body">
+            <table class="table table-dark table-hover" style="overflow: hidden; border-radius: 10px;">
+              <thead>
+                <tr>
+                  <th scope="col" class="text-center">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_curators_in_marathon_group" data-group-name="{{ group.name_group }}" data-group-id="{{ group.group_id }}">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
+                        <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                        <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
+                      </svg>
+                    </button>
+                  </th>
+                  <th scope="col" class="text-center">Имя</th>
+                  <th scope="col" class="text-center">Фамилия</th>
+                  <th scope="col" class="text-center">Действие</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for curator in group.curators_in_group %}
+                  <tr>
+                    <th scope="row" class="text-center">{{ loop.index }}</th>
+                    <td class="text-center"><a href="https://vk.com/id{{ curator.curator_vk_id }}" class="text-decoration-none fw-bold">{{ curator['curator_first_name'] }}</a></td>
+                    <td class="text-center"><a href="https://vk.com/id{{ curator.curator_vk_id }}" class="text-decoration-none fw-bold">{{ curator['curator_last_name'] }}</a></td>
+                    <td class="text-center">
+                      <div class="d-grid gap-2 d-md-block col-12 mx-auto">
+                        <button type="button" class="btn btn-outline-danger btn-sm" id="removing_curator_from_group_button_user_id" value="{{ curator.curator_id }}" data-bs-toggle="modal" data-bs-target="#modal_removing_curator_from_marathon_group_id">Удалить</button>
+                        <button type="button" class="btn btn-outline-primary btn-sm" id="transfer_of_the_curator_to_another_marathon_group_button_user_id" value="{{ curator.curator_id }}" data-bs-toggle="modal" data-bs-target="#modal_transfer_of_the_curator_to_another_marathon_group_id">Перевести</button>
+                      </div>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+</div>
+{% if current_user.access_panel is defined %}
+  {% if current_user.access_panel.access is defined %}
+    {% if current_user.access_panel.access.access_name is defined and current_user.access_panel.access.access_name != 'moderator' and current_user.access_panel.access.access_name != 'user' %}
+      <div class="modal fade" id="modal_removing_curator_from_marathon_group_id" tabindex="-1" aria-labelledby="removing_curator_from_marathon_group_id" aria-hidden="true" data-bs-theme="dark">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5 text-decoration-none" id="removing_curator_from_marathon_group_id">Удалить куратора из группы марафона?</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form_removing_curator_from_marathon_group_id">
+                    <div class="text-end">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                      <button type="submit" class="btn btn-outline-danger" id="form_removing_curator_from_marathon_group_button_submit_id">Удалить</button>
+                    </div>
+                </form>
+                <script>
+                    $(document).ready(function () {
+                      $("#form_removing_curator_from_marathon_group_id").submit(function () {
+                          // Получение ID формы
+                          var formID = $(this).attr('id');
+                          // Добавление решётки к имени ID
+                          var formNm = $('#' + formID);
+                          let user = JSON.parse(localStorage.curator_id);
+                          let user_id = user.id;
+                          let group = JSON.parse(localStorage.group_id);
+                          let group_id = group.id;
+                          delete localStorage.curator_id;
+                          delete localStorage.group_id;
+                          $.ajax({
+                              type: "POST",
+                              url: '/managing_marathon_groups',
+                              data: {'csrf_token': '{{ csrf_token() }}', 'method': 'removing_curator_from_group', 'user_id': user_id, 'group_id': group_id},
+                              beforeSend: function () {
+                                $("#form_removing_curator_from_marathon_group_button_submit_id").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Удаляю куратора...');
+                              },
+                              success: function () {
+                                $("#form_removing_curator_from_marathon_group_button_submit_id").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Куратор удалён');
+                                setTimeout(function() {
+                                  $("#form_removing_curator_from_marathon_group_button_submit_id").html('Удалить');
+                                }, 500);
+                                $("#modal_removing_curator_from_marathon_group_id").modal('hide');
+                                $('.modal-backdrop').remove();
+                                $.ajax({
+                                    url: "/curators_in_marathon_groups",
+                                    type: "get",
+                                    dataType: "html",
+                                    success: function(response) {
+                                        $("#base_main").html(response);
+                                    }
+                                });
+                                return false;
+                              },
+                              error: function (error_msg) {
+                                // Вывод текста ошибки отправки
+                                $("#form_removing_curator_from_marathon_group_button_submit_id").html('<span class="spinner-grow spinner-grow-sm text-danger" role="status" aria-hidden="true"></span>Ошибка удаления куратора');
+                                setTimeout(function() {
+                                  $("#form_removing_curator_from_marathon_group_button_submit_id").html('Удалить');
+                                }, 2500);
+                              }
+                          });
+                          return false;
+                      });
+                  });
+                </script>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" id="modal_transfer_of_the_curator_to_another_marathon_group_id" tabindex="-1" aria-labelledby="transfer_of_the_curator_to_another_marathon_group_id" aria-hidden="true" data-bs-theme="dark">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5 text-decoration-none" id="transfer_of_the_curator_to_another_marathon_group_id">Перевод куратора в другую группу</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form_transfer_of_the_curator_to_another_marathon_group_id">
+                    <div class="mb-3" style="margin:0 auto;">
+                      <label for="access-rights" class="form-label text-white">Группа марафона:</label>
+                      <select class="form-select bg-dark-subtle" id="which_group" style="text-align: center;" required>
+                        {% if current_user.access_panel.access.access_name == 'superuser' or current_user.access_panel.access.access_name == 'administrator' or current_user.access_panel.access.access_name == 'redactor' %}
+                            {% for group in list_groups %}
+                                <option value="{{ group.id }}">{{ group.name_group }}</option>
+                            {% endfor %}
+                        {% endif %}
+                      </select>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                      <button type="submit" class="btn btn-outline-success" id="form_transfer_of_the_curator_to_another_marathon_group_button_submit_id">Перевести</button>
+                    </div>
+                </form>
+                <script>
+                    $(document).ready(function () {
+                      $("#form_transfer_of_the_curator_to_another_marathon_group_id").submit(function () {
+                          // Получение ID формы
+                          var formID = $(this).attr('id');
+                          // Добавление решётки к имени ID
+                          var formNm = $('#' + formID);
+                          let user = JSON.parse(localStorage.curator_id);
+                          let user_id = user.id;
+                          let group = JSON.parse(localStorage.group_id);
+                          let group_id = group.id;
+                          delete localStorage.curator_id;
+                          delete localStorage.group_id;
+                          $.ajax({
+                              type: "POST",
+                              url: '/managing_marathon_groups',
+                              data: {'csrf_token': '{{ csrf_token() }}', 'method': 'transfer_of_the_curator', 'user_id': user_id, 'group_id': group_id, 'which_group_id': document.getElementById("which_group").value},
+                              beforeSend: function () {
+                                $("#form_transfer_of_the_curator_to_another_marathon_group_button_submit_id").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Перевожу куратора...');
+                              },
+                              success: function () {
+                                $("#form_transfer_of_the_curator_to_another_marathon_group_button_submit_id").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Куратор переведён');
+                                setTimeout(function() {
+                                  $("#form_transfer_of_the_curator_to_another_marathon_group_button_submit_id").html('Перевести');
+                                }, 500);
+                                $("#modal_transfer_of_the_curator_to_another_marathon_group_id").modal('hide');
+                                $('.modal-backdrop').remove();
+                                $.ajax({
+                                    url: "/curators_in_marathon_groups",
+                                    type: "get",
+                                    dataType: "html",
+                                    success: function(response) {
+                                        $("#base_main").html(response);
+                                    }
+                                });
+                                return false;
+                              },
+                              error: function (error_msg) {
+                                // Вывод текста ошибки отправки
+                                $("#form_transfer_of_the_curator_to_another_marathon_group_button_submit_id").html('<span class="spinner-grow spinner-grow-sm text-danger" role="status" aria-hidden="true"></span>Ошибка перевода');
+                                setTimeout(function() {
+                                  $("#form_transfer_of_the_curator_to_another_marathon_group_button_submit_id").html('Перевести');
+                                }, 2500);
+                              }
+                          });
+                          return false;
+                      });
+                  });
+                </script>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" id="modal_curators_in_marathon_group" tabindex="-1" aria-labelledby="CuratorsInGroupsLabel" aria-hidden="true" data-bs-theme="dark">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="CuratorsInGroupsLabel"></h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script>
+        for(let button of document.querySelectorAll('button[id^="marathon_group_button"]')){
+          button.addEventListener('click', function() {
+            localStorage.group_id = JSON.stringify({id: button.value});
+          })
+        }
+        for(let button of document.querySelectorAll('button[id^="transfer_of_the_curator_to_another_marathon_group_button_user_id"]')){
+            button.addEventListener('click', function() {
+              localStorage.curator_id = JSON.stringify({id: button.value});
+            })
+        }
+        for(let button of document.querySelectorAll('button[id^="removing_curator_from_group_button_user_id"]')){
+            button.addEventListener('click', function() {
+              localStorage.curator_id = JSON.stringify({id: button.value});
+            })
+        }
+        var ModalCuratorsInGroups = document.getElementById('modal_curators_in_marathon_group')
+        if (ModalCuratorsInGroups) {
+          ModalCuratorsInGroups.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget
+      
+            const group_name = button.getAttribute('data-group-name')
+            const group_id = button.getAttribute('data-group-id')
+      
+            const modalTitle = ModalCuratorsInGroups.querySelector('.modal-title')
+            const modalBody = ModalCuratorsInGroups.querySelector('.modal-body')
+      
+            modalTitle.textContent = `Добавление куратора в группу «${group_name}»`
+      
+            $.ajax({
+              type: "GET",
+              url: '/curators_to_add_to_group',
+              data: {'group_id': group_id},
+              beforeSend: function (){
+                $(modalBody).html('<div class="d-flex text-light justify-content-center"><span class="spinner-border text-light" role="status"></span><strong>Загрузка...</strong></div>');
+              },
+              success: function (response) {
+                setTimeout(function() {
+                  $(modalBody).html('<div class="d-flex text-light justify-content-center"><span class="spinner-border text-success" role="status"></span><strong>Загружено...</strong></div>');
+                  setTimeout(function() {
+                    $(modalBody).html(response);
+                  }, 1500);
+                }, 1500);
+              },
+              error: function (error_msg) {
+                // Вывод текста ошибки отправки
+                $(modalBody).html('<div class="d-flex text-light justify-content-center"><span class="spinner-border text-danger" role="status"></span><strong>Ошибка загрузки...</strong></div>');
+              }
+            });
+            return false;
+          })
+        }
+      </script>
+    {% endif %}
+  {% endif %}
+{% endif %}
+{% endif %}

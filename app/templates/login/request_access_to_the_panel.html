@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Авторизация | Запрос доступа</title>
+        <script src="{{ url_for('static', filename='js/bootstrap.bundle.js') }}"></script>
+        <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/login/login.css') }}" rel="stylesheet">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon/favicon-32x32.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon/favicon-16x16.png') }}">
+    </head>
+    <body class="bg-dark">
+        <div id="notifications"></div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script>
+          function pushget(){
+            $.ajax({
+                url: "/user_notifications",
+                method: "get",
+                dataType: "html",
+                async: true,
+                success: function(response) {
+                    if (response != "") {
+                    $("#notifications").html(response);
+                    }
+                    setTimeout(pushget, 1000);
+                },
+                error: function(xhr) {
+                    setTimeout(pushget, 1000);
+                },
+            });
+          };
+          pushget();
+        </script>
+        <main class="form-signin w-100 m-auto text-center">
+            <h1 class="h3 mb-3 fw-normal d-flex justify-content-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-door-open-fill" viewBox="0 0 16 16">
+                    <path d="M1.5 15a.5.5 0 0 0 0 1h13a.5.5 0 0 0 0-1H13V2.5A1.5 1.5 0 0 0 11.5 1H11V.5a.5.5 0 0 0-.57-.495l-7 1A.5.5 0 0 0 3 1.5V15H1.5zM11 2h.5a.5.5 0 0 1 .5.5V15h-1V2zm-2.5 8c-.276 0-.5-.448-.5-1s.224-1 .5-1 .5.448.5 1-.224 1-.5 1z"/>
+                </svg>Запрос доступа
+            </h1>
+            <p class="text-center">У Вас нет доступа к панели, чтобы его получить, нужно нажать на кнопку ниже и запросить его.</p>
+            <p class="text-center">Как только Вам выдадут доступ, Вы сможете войти в панель.</p>
+            <button type="button" id="request_access_to_the_panel" onclick="RequestAccess(this.id);" class="btn btn-outline-primary">Запросить доступ</button>
+        </main>
+    <script>
+        function RequestAccess(button_id) {
+            $.ajax({
+                url: "/login",
+                method: "POST",
+                data: {'csrf_token': '{{ csrf_token() }}', 'method': 'request_access'},
+                async: true,
+                success: function (response) {
+                    $('#' + button_id).html('<div class="d-flex justify-content-center"><span class="spinner-grow text-success" role="status" aria-hidden="true"></span>Доступ запрошен, ожидайте.</div>');
+                },
+                error: function () {
+                    $('#' + button_id).html('<span class="spinner-grow text-danger" role="status" aria-hidden="true"></span>Ошибка запроса, перезагрузите страницу.');
+                }
+            });
+        }
+    </script>
+    </body>
+</html>

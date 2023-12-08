@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html lang="en"> <!--<![endif]-->
+
+<head>
+    <meta charset="utf-8" />
+    <title>Страница не найдена</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
+    <link type="text/css" media="all" href="{{ url_for('static', filename='css/errors/404_v2.css') }}" rel="stylesheet" />
+    <link type="text/css" media="all" href="{{ url_for('static', filename='css/errors/404_v2_styles.css') }}" rel="stylesheet" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon/favicon-16x16.png') }}">
+    <link href='https://fonts.googleapis.com/css?family=Raleway:300,400,500,600,700,800,900' rel='stylesheet' type='text/css'>
+
+</head>
+<body>
+
+    <!-- Load page -->
+    <div class="animationload">
+        <div class="loader">
+        </div>
+    </div>
+    <!-- End load page -->
+
+    <!-- Content Wrapper -->
+    <div id="wrapper">
+        <div class="container">
+            <!-- Switcher -->
+            <div class="switcher">
+                <input id="sw" type="checkbox" class="switcher-value">
+                <label for="sw" class="sw_btn"></label>
+                <div class="bg"></div>
+                <div class="text"><span class="text-l">Отключить</span><span class="text-d">Включить</span><br />Свет</div>
+            </div>
+            <!-- End Switcher -->
+
+            <!-- Dark version -->
+            <div id="dark" class="row text-center">
+                <div class="info">
+                    <img src="{{ url_for('static', filename='image/errors/404_v2.png') }}" alt="404 error" />
+                </div>
+            </div>
+            <!-- End Dark version -->
+
+            <!-- Light version -->
+            <div id="light" class="row text-center">
+                <!-- Info -->
+                <div class="info">
+                    <img src="{{ url_for('static', filename='gifs/errors/404_v2.gif') }}" alt="404 error" />
+                    <h4>Страница которую вы ищите, возможно удалена/перенесена/недоступна, проверьте корректность введённых данных в адресе.</h4>
+                    <a href="{{ url_for('index') }}" class="btn">Главная</a>
+                </div>
+                <!-- end Info -->
+            </div>
+            <!-- End Light version -->
+
+        </div>
+        <!-- end container -->
+    </div>
+    <!-- end Content Wrapper -->
+
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='js/errors/404_v2.custom.js') }}" type="text/javascript"></script>
+    <script src="{{ url_for('static', filename='js/errors/404_v2.min.js') }}" type="text/javascript"></script>
+    <script src="{{ url_for('static', filename='js/errors/404_v2.js') }}" type="text/javascript"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</body>
+</html>

@@ -1,0 +1,280 @@
+{% if list_groups == [] %}
+<div class="container-fluid bg-dark">
+    <div class="d-flex user-select-none pt-3">
+        <p class="pb-3 mb-0 text-center text-light fw-bold lh-sm border-bottom w-100">
+           Подключённые группы марафонов не обнаружены, либо информация о них ещё не обновилась.
+        </p>
+    </div>
+</div>
+{% else %}
+<div class="row row-cols-1 row-cols-md-4 g-2">
+    {% for group in list_groups %}
+    <div class="col">
+        <div class="card">
+            <img src="{{ group.photo_group_200 }}" width="100" class="img-thumbnail rounded float-start rounded-circle" alt="...">
+            <div class="card-body">
+                <h5 class="card-title"><a href="https://vk.com/club{{ group.group_id }}" class="text-decoration-none">{{ group.name }}</a></h5>
+                <p class="card-text">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-rolodex" viewBox="0 0 16 16">
+                        <path d="M8 9.05a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
+                        <path d="M1 1a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h.5a.5.5 0 0 0 .5-.5.5.5 0 0 1 1 0 .5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5.5.5 0 0 1 1 0 .5.5 0 0 0 .5.5h.5a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H6.707L6 1.293A1 1 0 0 0 5.293 1H1Zm0 1h4.293L6 2.707A1 1 0 0 0 6.707 3H15v10h-.085a1.5 1.5 0 0 0-2.4-.63C11.885 11.223 10.554 10 8 10c-2.555 0-3.886 1.224-4.514 2.37a1.5 1.5 0 0 0-2.4.63H1V2Z"/>
+                    </svg>
+                    Добавил: <a href="https://vk.com/id{{ group.who_added_group_vk_id }}" class="text-decoration-none">{{ group.who_added_group_first_name }} {{ group.who_added_group_last_name }}</a>
+                    <br />
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-table" viewBox="0 0 16 16">
+                        <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm15 2h-4v3h4V4zm0 4h-4v3h4V8zm0 4h-4v3h3a1 1 0 0 0 1-1v-2zm-5 3v-3H6v3h4zm-5 0v-3H1v2a1 1 0 0 0 1 1h3zm-4-4h4V8H1v3zm0-4h4V4H1v3zm5-3v3h4V4H6zm4 4H6v3h4V8z"/>
+                    </svg>
+                    Привязанная таблица: {% if group.google_table != [] %}
+                    <a href="{{ group.google_table[0]['link'] }}" class="text-decoration-none">{{ group.google_table[0]['link'] }}</a>
+                    <br />
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar3" viewBox="0 0 16 16">
+                        <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z"/>
+                        <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                    </svg>
+                    Дата привязки: {{ group.google_table[0]['time_of_addition'] }}
+                    {% else %}
+                     отсутствует 
+                    {% endif %}
+                </p>
+                <div class="d-flex justify-content-center">
+                    <button type="button" id="delete_marathon_group_button_group_id_id" value="{{ group.group_id }}" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modal_delete_marathon_group_id">
+                        Удалить
+                    </button>
+                    <button type="button" id="binding_table_to_group_button_group_id_id" value="{{ group.group_id }}" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal_binding_table_to_group_group_id">
+                        Привязать таблицу
+                    </button>
+                    <button type="button" id="" value="" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_setting_marathon_group" data-group-name="{{ group.name }}" data-group-id="{{ group.group_id }}">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear-fill" viewBox="0 0 16 16">
+                        <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
+                      </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="card-footer">
+                <small class="text-body-secondary">Дата добавления: {{ group.time_of_addition_group }}</small>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% if current_user.access_panel is defined %}
+  {% if current_user.access_panel.access is defined %}
+    {% if current_user.access_panel.access.access_name is defined and current_user.access_panel.access.access_name != 'redactor' and current_user.access_panel.access.access_name != 'moderator' and current_user.access_panel.access.access_name != 'user' %}
+      <div class="modal fade" id="modal_delete_marathon_group_id" tabindex="-1" aria-labelledby="delete_marathon_group_id" aria-hidden="true" data-bs-theme="dark">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+              <h1 class="modal-title fs-5 text-decoration-none" id="delete_marathon_group_id">Вы действительно хотите удалить группу?</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <form id="form_delete_marathon_group_id">
+                      <div class="text-end">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        <button type="submit" class="btn btn-outline-danger" id="form_delete_marathon_group_id_button_submit_id">Удалить</button>
+                      </div>
+                  </form>
+                  <script>
+                      let buttons_delete_marathon_group_id = document.querySelectorAll('button[id^="delete_marathon_group_button_group_id_id"]');
+                      for(let button of buttons_delete_marathon_group_id){
+                          button.addEventListener('click', function() {
+                              localStorage.delete_marathon_group_id = JSON.stringify({group_id: button.value});
+                          })
+                      }
+                  </script>
+                  <script>
+                      $(document).ready(function () {
+                        $("#form_delete_marathon_group_id").submit(function () {
+                            // Получение ID формы
+                            var formID = $(this).attr('id');
+                            // Добавление решётки к имени ID
+                            var formNm = $('#' + formID);
+                            console.log('test');
+                            let group = JSON.parse(localStorage.delete_marathon_group_id);
+                            let group_id = group.group_id;
+                            delete localStorage.delete_marathon_group_id;
+                            $.ajax({
+                                type: "POST",
+                                url: '/managing_marathon_groups',
+                                data: {'csrf_token': '{{ csrf_token() }}', 'method': 'delete_marathon_group_id', 'group_id': group_id},
+                                beforeSend: function () {
+                                  $("#form_delete_marathon_group_id_button_submit_id").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Удаляю группу...');
+                                },
+                                success: function () {
+                                  $("#form_delete_marathon_group_id_button_submit_id").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Группа удалена');
+                                  setTimeout(function() {
+                                    $("#form_delete_marathon_group_id_button_submit_id").html('Удалить');
+                                  }, 500);
+                                  $("#modal_delete_marathon_group_id").modal('hide');
+                                  $('.modal-backdrop').remove();
+                                  $.ajax({
+                                      url: "/marathon_groups",
+                                      type: "get",
+                                      dataType: "html",
+                                      success: function(response) {
+                                          $("#base_main").html(response);
+                                      }
+                                  });
+                                  return false;
+                                },
+                                error: function (error_msg) {
+                                  // Вывод текста ошибки отправки
+                                  $("#form_delete_marathon_group_id_button_submit_id").html('<span class="spinner-grow spinner-grow-sm text-danger" role="status" aria-hidden="true"></span>Ошибка удаления группы');
+                                  setTimeout(function() {
+                                    $("#form_delete_marathon_group_id_button_submit_id").html('Удалить');
+                                  }, 2500);
+                                }
+                            });
+                            return false;
+                        });
+                    });
+                  </script>
+              </div>
+            </div>
+          </div>
+      </div>
+      <div class="modal fade" id="modal_binding_table_to_group_group_id" tabindex="-1" aria-labelledby="binding_table_to_group_group_id" aria-hidden="true" data-bs-theme="dark">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5 text-decoration-none" id="binding_table_to_group_group_id">Какую таблицу привязать к группе?</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <form id="form_binding_table_to_group_group_id">
+                    {% if list_tables != [] %}
+                      <div class="mb-3" style="margin:0 auto;">
+                          <label for="binding-table" class="form-label text-white">Таблица марафона:</label>
+                          <select class="form-select bg-dark-subtle" id="binding_google_table" style="text-align: center;" required>
+                          {% if current_user.access_panel is defined %}
+                            {% if current_user.access_panel.access is defined %}
+                              {% if current_user.access_panel.access.access_name is defined %}
+                                {% if current_user.access_panel.access.access_name == 'superuser' or current_user.access_panel.access.access_name == 'administrator' %}
+                                  {% for table in list_tables %}
+                                    <option value="{{ table.id }}">{{ table.name }}</option>
+                                  {% endfor %}
+                                {% endif %}
+                              {% endif %}
+                            {% endif %}
+                          {% endif %}
+                          </select>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        <button type="submit" class="btn btn-outline-success" id="form_binding_google_table_button_submit_id">Привязать</button>
+                      </div>
+                    {% endif %}
+                  </form>
+                  <script>
+                    let buttons_binding_table_group_id = document.querySelectorAll('button[id^="binding_table_to_group_button_group_id_id"]');
+                    for(let button of buttons_binding_table_group_id){
+                        button.addEventListener('click', function() {
+                            localStorage.binding_table_group_id = JSON.stringify({group_id: button.value});
+                        })
+                    }
+                  </script>
+                  <script>
+                    $(document).ready(function () {
+                      $("#form_binding_table_to_group_group_id").submit(function () {
+                          // Получение ID формы
+                          var formID = $(this).attr('id');
+                          // Добавление решётки к имени ID
+                          var formNm = $('#' + formID);
+                          console.log('test');
+                          let group = JSON.parse(localStorage.binding_table_group_id);
+                          let group_id = group.group_id;
+                          delete localStorage.binding_table_group_id;
+                          $.ajax({
+                              type: "POST",
+                              url: '/managing_google_spreadsheet',
+                              data: {'csrf_token': '{{ csrf_token() }}', 'method': 'binding_google_spreadsheet_to_group', 'group_id': group_id, 'table_id': document.getElementById("binding_google_table").value},
+                              beforeSend: function () {
+                                $("#form_binding_google_table_button_submit_id").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Привязываю таблицу...');
+                              },
+                              success: function () {
+                                $("#form_binding_google_table_button_submit_id").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Таблица привязана');
+                                setTimeout(function() {
+                                  $("#form_binding_google_table_button_submit_id").html('Привязать');
+                                }, 500);
+                                $("#modal_binding_table_to_group_group_id").modal('hide');
+                                $('.modal-backdrop').remove();
+                                $.ajax({
+                                    url: "/marathon_groups",
+                                    type: "get",
+                                    dataType: "html",
+                                    success: function(response) {
+                                        $("#base_main").html(response);
+                                    }
+                                });
+                                return false;
+                              },
+                              error: function (error_msg) {
+                                // Вывод текста ошибки отправки
+                                $("#form_binding_google_table_button_submit_id").html('<span class="spinner-grow spinner-grow-sm text-danger" role="status" aria-hidden="true"></span>Ошибка привязки таблицы');
+                                setTimeout(function() {
+                                  $("#form_binding_google_table_button_submit_id").html('Привязать');
+                                }, 2500);
+                              }
+                          });
+                          return false;
+                      });
+                    });
+                  </script>
+              </div>
+            </div>
+          </div>
+      </div>
+      <script>
+        const ModalMarathonGroupSettings = document.getElementById('modal_setting_marathon_group')
+        if (ModalMarathonGroupSettings) {
+          ModalMarathonGroupSettings.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget
+      
+            const group_name = button.getAttribute('data-group-name')
+            const group_id = button.getAttribute('data-group-id')
+      
+            const modalTitle = ModalMarathonGroupSettings.querySelector('.modal-title')
+            const modalBody = ModalMarathonGroupSettings.querySelector('.modal-body')
+      
+            modalTitle.textContent = `Настройки группы «${group_name}»`
+      
+            $.ajax({
+              type: "GET",
+              url: '/marathon_group_settings',
+              data: {'group_id': group_id},
+              beforeSend: function (){
+                $(modalBody).html('<div class="d-flex text-light justify-content-center"><span class="spinner-border text-light" role="status"></span><strong>Загрузка...</strong></div>');
+              },
+              success: function (response) {
+                setTimeout(function() {
+                  $(modalBody).html('<div class="d-flex text-light justify-content-center"><span class="spinner-border text-success" role="status"></span><strong>Загружено...</strong></div>');
+                  setTimeout(function() {
+                    $(modalBody).html(response);
+                  }, 1500);
+                }, 1500);
+              },
+              error: function (error_msg) {
+                // Вывод текста ошибки отправки
+                $(modalBody).html('<div class="d-flex text-light justify-content-center"><span class="spinner-border text-danger" role="status"></span><strong>Ошибка загрузки...</strong></div>');
+              }
+            });
+            return false;
+          })
+        }
+      </script>
+      <div class="modal fade" id="modal_setting_marathon_group" tabindex="-1" aria-labelledby="setting_marathon_group" aria-hidden="true" data-bs-theme="dark">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5 text-decoration-none" id="setting_marathon_group">Настройки группы</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  {% endif %}
+{% endif %}
+{% endif %}

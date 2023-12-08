@@ -1,0 +1,46 @@
+{% if list_curators != [] %}
+<label for="curator-select" class="text-light text-center">Выберите куратора которого нужно добавить:</label>
+<select id="curator-select" name="selected_curator" onchange="AddCuratorToGgroup(this.value, {{ group_id }})" class="form-select text-center text-light bg-dark rounded" size="10" autocomplete="off" required style="cursor: grab; color: #2d3667;">
+    {% for user in list_curators %}
+        <option value="{{ user.id }}">
+            <a href="https://vk.com/id{{ user.user_id }}" class="text-decoration-none">
+                {{ user.first_name }} {{ user.last_name }}
+            </a>
+        </option>
+    {% endfor %}
+</select>
+<script>
+    function AddCuratorToGgroup(curator_id, group_id) {
+        $.ajax({
+            type: "POST",
+            url: '/managing_marathon_groups',
+            data: {'csrf_token': '{{ csrf_token() }}', 'method': 'adding_curator_to_group', 'curator_id': curator_id, 'group_id': group_id},
+            success: function (response) {
+                $("#modal_curators_in_marathon_group").modal('hide');
+                $('.modal-backdrop').remove();
+                $.ajax({
+                    url: "/curators_in_marathon_groups",
+                    type: "get",
+                    dataType: "html",
+                    success: function(response) {
+                        $("#base_main").html(response);
+                    }
+                });
+                return false;
+            },
+            error: function() {
+                
+            }
+        });
+        return false;
+        }
+</script>
+{% else %}
+<div class="container-fluid bg-dark">
+    <div class="d-flex user-select-none pt-3">
+      <p class="pb-3 mb-0 text-center text-light fw-bold lh-sm">
+        Не добавленные кураторы в данную группу не обнаружены, либо информация о них ещё не обновилась.
+      </p>
+    </div>
+</div>
+{% endif %}

@@ -1,0 +1,31 @@
+{% if list_groups == [] %}
+<div class="container-fluid bg-dark">
+    <div class="d-flex user-select-none pt-3">
+        <p class="pb-3 mb-0 text-center text-light fw-bold lh-sm border-bottom w-100">
+           Ваши группы, которые Вы курируете не обнаружены, либо информация о них ещё не обновилась.
+        </p>
+    </div>
+</div>
+{% else %}
+    <div class="row row-cols-1 row-cols-md-4 g-2">
+        {% for group in list_groups %}
+        <div class="col">
+            <div class="card">
+                <img src="{{ group.photo_200 }}" width="100" class="img-thumbnail rounded float-start rounded-circle" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">{{ group.name }}</h5>
+                    <p class="card-text">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-rolodex" viewBox="0 0 16 16">
+                            <path d="M8 9.05a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
+                            <path d="M1 1a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h.5a.5.5 0 0 0 .5-.5.5.5 0 0 1 1 0 .5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5.5.5 0 0 1 1 0 .5.5 0 0 0 .5.5h.5a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H6.707L6 1.293A1 1 0 0 0 5.293 1H1Zm0 1h4.293L6 2.707A1 1 0 0 0 6.707 3H15v10h-.085a1.5 1.5 0 0 0-2.4-.63C11.885 11.223 10.554 10 8 10c-2.555 0-3.886 1.224-4.514 2.37a1.5 1.5 0 0 0-2.4.63H1V2Z"/>
+                        </svg>
+                        Участников: {{ group.members_count }}
+                        <br />
+                    </p>
+                    <a class="btn btn-primary" href="{{ url_for('show_group_get', group_id=group.group_id) }}" role="button">Открыть</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endif %}

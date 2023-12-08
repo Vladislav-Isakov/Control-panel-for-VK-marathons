@@ -1,0 +1,1374 @@
+<!doctype html>
+<html lang="ru">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Панель управления</title>
+        <script src="{{ url_for('static', filename='js/sidebars.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap.bundle.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/comments.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/modal.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/buttons.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/google_sheets.js') }}"></script>
+        <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/headers.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/sidebars.css') }}" rel="stylesheet"> <!-- Кроме sidebars контролирует и размеры, регулировку main'a и body -->
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon/favicon-32x32.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon/favicon-16x16.png') }}">
+    </head>
+    <style>
+      .bi {
+        vertical-align: -.125em;
+        fill: currentColor;
+      }
+    </style>
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <symbol id="panel" viewBox="0 0 16 16">
+          <path d="M6 9a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3A.5.5 0 0 1 6 9zM3.854 4.146a.5.5 0 1 0-.708.708L4.793 6.5 3.146 8.146a.5.5 0 1 0 .708.708l2-2a.5.5 0 0 0 0-.708l-2-2z"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M2 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h12z">
+        </symbol>
+        <symbol id="pricing" viewBox="0 0 16 16">
+          <path d="M0 5a5.002 5.002 0 0 0 4.027 4.905 6.46 6.46 0 0 1 .544-2.073C3.695 7.536 3.132 6.864 3 5.91h-.5v-.426h.466V5.05c0-.046 0-.093.004-.135H2.5v-.427h.511C3.236 3.24 4.213 2.5 5.681 2.5c.316 0 .59.031.819.085v.733a3.46 3.46 0 0 0-.815-.082c-.919 0-1.538.466-1.734 1.252h1.917v.427h-1.98c-.003.046-.003.097-.003.147v.422h1.983v.427H3.93c.118.602.468 1.03 1.005 1.229a6.5 6.5 0 0 1 4.97-3.113A5.002 5.002 0 0 0 0 5zm16 5.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0zm-7.75 1.322c.069.835.746 1.485 1.964 1.562V14h.54v-.62c1.259-.086 1.996-.74 1.996-1.69 0-.865-.563-1.31-1.57-1.54l-.426-.1V8.374c.54.06.884.347.966.745h.948c-.07-.804-.779-1.433-1.914-1.502V7h-.54v.629c-1.076.103-1.808.732-1.808 1.622 0 .787.544 1.288 1.45 1.493l.358.085v1.78c-.554-.08-.92-.376-1.003-.787H8.25zm1.96-1.895c-.532-.12-.82-.364-.82-.732 0-.41.311-.719.824-.809v1.54h-.005zm.622 1.044c.645.145.943.38.943.796 0 .474-.37.8-1.02.86v-1.674l.077.018z"/>
+        </symbol>
+        <symbol id="info-circle" viewBox="0 0 16 16">
+          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+          <path fill-rule="evenodd" d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+        </symbol>
+        <symbol id="bugs" viewBox="0 0 16 16">
+          <path d="M4.355.522a.5.5 0 0 1 .623.333l.291.956A4.979 4.979 0 0 1 8 1c1.007 0 1.946.298 2.731.811l.29-.956a.5.5 0 1 1 .957.29l-.41 1.352A4.985 4.985 0 0 1 13 6h.5a.5.5 0 0 0 .5-.5V5a.5.5 0 0 1 1 0v.5A1.5 1.5 0 0 1 13.5 7H13v1h1.5a.5.5 0 0 1 0 1H13v1h.5a1.5 1.5 0 0 1 1.5 1.5v.5a.5.5 0 1 1-1 0v-.5a.5.5 0 0 0-.5-.5H13a5 5 0 0 1-10 0h-.5a.5.5 0 0 0-.5.5v.5a.5.5 0 1 1-1 0v-.5A1.5 1.5 0 0 1 2.5 10H3V9H1.5a.5.5 0 0 1 0-1H3V7h-.5A1.5 1.5 0 0 1 1 5.5V5a.5.5 0 0 1 1 0v.5a.5.5 0 0 0 .5.5H3c0-1.364.547-2.601 1.432-3.503l-.41-1.352a.5.5 0 0 1 .333-.623zM4 7v4a4 4 0 0 0 3.5 3.97V7H4zm4.5 0v7.97A4 4 0 0 0 12 11V7H8.5zM12 6a3.989 3.989 0 0 0-1.334-2.982A3.983 3.983 0 0 0 8 2a3.983 3.983 0 0 0-2.667 1.018A3.989 3.989 0 0 0 4 6h8z"/>
+        </symbol>
+        <symbol id="eyedropper" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M13.354.646a1.207 1.207 0 0 0-1.708 0L8.5 3.793l-.646-.647a.5.5 0 1 0-.708.708L8.293 5l-7.147 7.146A.5.5 0 0 0 1 12.5v1.793l-.854.853a.5.5 0 1 0 .708.707L1.707 15H3.5a.5.5 0 0 0 .354-.146L11 7.707l1.146 1.147a.5.5 0 0 0 .708-.708l-.647-.646 3.147-3.146a1.207 1.207 0 0 0 0-1.708l-2-2zM2 12.707l7-7L10.293 7l-7 7H2v-1.293z"/>
+        </symbol>
+        <symbol id="grid" viewBox="0 0 16 16">
+          <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zM2.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zM1 10.5A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3z"/>
+        </symbol>
+        <symbol id="platform-pc" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 1a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V1Zm1 13.5a.5.5 0 1 0 1 0 .5.5 0 0 0-1 0Zm2 0a.5.5 0 1 0 1 0 .5.5 0 0 0-1 0ZM9.5 1a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5ZM9 3.5a.5.5 0 0 0 .5.5h5a.5.5 0 0 0 0-1h-5a.5.5 0 0 0-.5.5ZM1.5 2A1.5 1.5 0 0 0 0 3.5v7A1.5 1.5 0 0 0 1.5 12H6v2h-.5a.5.5 0 0 0 0 1H7v-4H1.5a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5H7V2H1.5Z"/>
+        </symbol>
+        <symbol id="platform-phone" viewBox="0 0 16 16">
+            <path d="M8 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+            <path fill-rule="evenodd" d="M11 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h6zM5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H5z"/>
+        </symbol>
+    </svg>
+    <body class="bg-dark">
+        <div class="row">
+            <div id="notifications"></div>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+            <script>
+            function pushget(){
+                $.ajax({
+                    url: "/user_notifications",
+                    method: "get",
+                    dataType: "html",
+                    async: true,
+                    success: function(response) {
+                      if (response != "") {
+                        $("#notifications").html(response);
+                      }
+                      setTimeout(pushget, 1000);
+                    },
+                    error: function(xhr) {
+                      setTimeout(pushget, 1000);
+                    },
+                });
+            };
+            pushget();
+            </script>
+        </div>
+        <header class="bg-dark">
+            <div class="px-3 py-2 text-bg-dark">
+                <nav class="navbar navbar-dark bg-dark d-block d-sm-block d-xxl-none d-xl-none d-lg-none d-md-none" >
+                    <div class="container-fluid">
+                      <span class="fs-4 navbar-dark bg-dark">Панель управления</span>
+                      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#main-menu-phone" aria-controls="main-menu-phone">
+                        <span class="navbar-toggler-icon"></span>
+                      </button>
+                      <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="main-menu-phone" aria-labelledby="main-menu-phone-label">
+                        <div class="offcanvas-header">
+                          <h5 class="offcanvas-title" id="main-menu-phone-label">Меню</h5>
+                          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                        </div>
+                        <div class="offcanvas-body">
+                          <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                            <li class="border my-3"></li>
+                            <li class="nav-item dropdown">
+                              <a class="btn btn-secondary dropdown-toggle mb-3" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Главная
+                              </a>
+                              <ul class="dropdown-menu dropdown-menu-dark">
+                                <li><a href="#" class="dropdown-item" id="updating_the_list_of_conversations">Мои беседы</a></li>
+                                <li><a href="#" class="dropdown-item" id="list_updates">Обновления</a></li>
+                                <li><a href="#" class="dropdown-item">Баг-трекер</a></li>
+                              </ul>
+                            </li>
+                            <li class="border my-3"></li>
+                            <li class="nav-item dropdown">
+                              <a class="btn btn-secondary dropdown-toggle mb-1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Аккаунт
+                              </a>
+                              <ul class="dropdown-menu dropdown-menu-dark">
+                                {% if current_user.is_anonymous %}
+                                <li>
+                                  <a href="{{ url_for('login') }}" class="dropdown-item">
+                                    Войти
+                                  </a>
+                                </li>
+                                {% else %}
+                                <li>
+                                  <a href="#profile" class="dropdown-item">
+                                    Профиль
+                                  </a>
+                                </li>
+                                <li>
+                                  <a class="dropdown-item" href="#settings" id="user_settings_base_button">
+                                    Настройки
+                                  </a>
+                                </li>
+                                <li>
+                                  <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                  <a href="{{ url_for('logout') }}" class="dropdown-item text-decoration-none link-danger rounded">
+                                    Выйти
+                                  </a>
+                                </li>
+                                {% endif %}
+                              </ul>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                </nav>
+                {# хедер на пк #}
+                {#
+                <div class="container d-none d-xl-block d-lg-block d-md-block d-xxl-block">
+                    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                        <a href="/" class="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none"></a>
+                        <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
+                            <li>
+                                <a href="#" class="nav-link text-white">
+                                  <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#pricing"/></svg>
+                                  Тарифы
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="nav-link text-white">
+                                  <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#info-circle"/></svg>
+                                  FAQ
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="nav-link text-white">
+                                  <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#bugs"/></svg>
+                                  Нашёл баг
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                #}
+            </div>
+        </header>
+        <div class="container-fluid bg-dark">
+            <div class="row">
+                <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark collapse">
+                    <a href="/" class="d-flex align-items-center pb-3 mb-3 link-light text-decoration-none border-bottom">
+                      <svg class="bi pe-none me-2" width="40" height="42"><use xlink:href="#panel"/></svg>
+                      <span class="fs-4">Панель управления</span>
+                    </a>
+                    <div class="position-sticky pt-3 sidebar-sticky">
+                        <ul class="list-unstyled ps-0">
+                            <li class="mb-1">
+                                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed text-light" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
+                                    Главная
+                                </button>
+                                <div class="collapse show" id="home-collapse">
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                      <li>
+                                        <a href="#my_groups" class="link-light d-inline-flex fw-bold text-decoration-none rounded" id="list_curator_groups" onclick="ClickButtonListCuratorGroups(this.id);">Мои группы</a>
+                                      </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            {% if current_user.access_panel is defined %}
+                              {% if current_user.access_panel.access is defined %}
+                                {% if current_user.access_panel.access.access_name is defined and current_user.access_panel.access.access_name != 'user' %}
+                                  <li class="mb-1">
+                                      <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed text-light" data-bs-toggle="collapse" data-bs-target="#panel-management-collapse" aria-expanded="false">
+                                          Управление панелью
+                                      </button>
+                                      <div class="collapse" id="panel-management-collapse">
+                                          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                              <li><a href="#granting_access_rights_in_the_panel" class="link-light d-inline-flex fw-bold text-decoration-none rounded" data-bs-toggle="modal" data-bs-target="#modal_granting_access_rights_in_the_panel_link">Выдать права</a></li>
+                                              <li><a href="#revocation_of_access_rights_in_the_panel" class="link-light d-inline-flex fw-bold text-decoration-none rounded" data-bs-toggle="modal" data-bs-target="#modal_revocation_of_access_rights_in_the_panel_link">Отозвать права</a></li>
+                                              <li><a href="#users_with_rights" class="link-light d-inline-flex fw-bold text-decoration-none rounded" id="list_of_users_with_rights" onclick="ClickButtonListUsersWithRights(this.id);">Пользователи с правами</a></li>
+                                              <li><a href="#faq_access_rights_in_the_panel" class="link-light d-inline-flex fw-bold text-decoration-none rounded" data-bs-toggle="modal" data-bs-target="#modal_faq_access_rights_in_the_panel">О правах</a></li>
+                                          </ul>
+                                      </div>
+                                  </li>
+                                {% endif %}
+                              {% endif %}
+                            {% endif %}
+                            {% if current_user.access_panel is defined %}
+                              {% if current_user.access_panel.access is defined %}
+                                {% if current_user.access_panel.access.access_name is defined and current_user.access_panel.access.access_name != 'redactor' and current_user.access_panel.access.access_name != 'moderator' and current_user.access_panel.access.access_name != 'user' %}
+                                  <li class="mb-1">
+                                      <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed text-light" data-bs-toggle="collapse" data-bs-target="#managing-groups-collapse" aria-expanded="false">
+                                          Группы
+                                      </button>
+                                      <div class="collapse" id="managing-groups-collapse">
+                                          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                              <li><a href="#add_marathon_group" class="link-light d-inline-flex fw-bold text-decoration-none rounded" data-bs-toggle="modal" data-bs-target="#modal_add_marathon_group">Добавить группу</a></li>
+                                              <li><a href="#delete_marathon_group_link" class="link-light d-inline-flex fw-bold text-decoration-none rounded" data-bs-toggle="modal" data-bs-target="#modal_delete_marathon_group_link">Удалить группу</a></li>
+                                              <li><a href="#curators_in_marathon_groups" class="link-light d-inline-flex fw-bold text-decoration-none rounded" id="list_of_curators_in_marathon_groups" onclick="ClickButtonListCuratorsInGroups(this.id);">Кураторы в группах</a></li>
+                                              <li><a href="#marathon_groups" class="link-light d-inline-flex fw-bold text-decoration-none rounded" id="list_of_marathon_groups" onclick="ClickButtonListMarathonGroups(this.id);">Список групп</a></li>
+                                          </ul>
+                                      </div>
+                                  </li>
+                                {% endif %}
+                              {% endif %}
+                            {% endif %}
+                            {% if current_user.access_panel is defined %}
+                              {% if current_user.access_panel.access is defined %}
+                                {% if current_user.access_panel.access.access_name is defined and current_user.access_panel.access.access_name != 'moderator' and current_user.access_panel.access.access_name != 'user' %}
+                                  <li class="mb-1">
+                                      <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed text-light" data-bs-toggle="collapse" data-bs-target="#managing-marathon-tables-collapse" aria-expanded="false">
+                                          Таблицы марафонов
+                                      </button>
+                                      <div class="collapse" id="managing-marathon-tables-collapse">
+                                          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                              <li><a href="#add_google_spreadsheet" class="link-light d-inline-flex fw-bold text-decoration-none rounded" data-bs-toggle="modal" data-bs-target="#modal_add_table_link">Добавить таблицу</a></li>
+                                              <li><a href="#delete_google_table" class="link-light d-inline-flex fw-bold text-decoration-none rounded" data-bs-toggle="modal" data-bs-target="#modal_deleting_google_tables_id">Удалить таблицу</a></li>
+                                              <li><a href="#google_spreadsheet_in_the_panel" class="link-light d-inline-flex fw-bold text-decoration-none rounded" id="list_of_google_spreadsheet_in_the_panel" onclick="ClickButtonListGoogleInPanel(this.id);">Список таблиц</a></li>
+                                          </ul>
+                                      </div>
+                                  </li>
+                                {% endif %}
+                              {% endif %}
+                            {% endif %}
+                            {% if current_user.access_panel is defined %}
+                            {% if current_user.access_panel.access is defined %}
+                              {% if current_user.access_panel.access.access_name is defined and current_user.access_panel.access.access_name != 'redactor' and current_user.access_panel.access.access_name != 'moderator' and current_user.access_panel.access.access_name != 'user' %}
+                                <li class="mb-1">
+                                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed text-light" data-bs-toggle="collapse" data-bs-target="#managing-access-to-panel-collapse" aria-expanded="false">
+                                      Доступ к панели
+                                    </button>
+                                    <div class="collapse" id="managing-access-to-panel-collapse">
+                                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                            <li><a href="#" class="link-light d-inline-flex fw-bold text-decoration-none rounded" id="list_users_with_requested_access_to_the_panel" onclick="ClickButtonListUsersWithRequestedAccessInPanel(this.id);">Запросы доступа</a></li>
+                                            <li><a href="#" class="link-light d-inline-flex fw-bold text-decoration-none rounded" data-bs-toggle="modal" data-bs-target="#modal_granting_the_user_access_to_the_panel">Выдать доступ</a></li>
+                                            <li><a href="#" class="link-light d-inline-flex fw-bold text-decoration-none rounded" data-bs-toggle="modal" data-bs-target="#modal_removing_user_access_to_the_panel">Забрать доступ</a></li>
+                                            <li><a href="#" class="link-light d-inline-flex fw-bold text-decoration-none rounded" id="list_users_with_access_to_the_panel" onclick="ClickButtonListUsersWithAccessInPanel(this.id);">Список пользователей</a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                              {% endif %}
+                            {% endif %}
+                          {% endif %}
+                            <li class="border-top my-3"></li>
+                            <li class="mb-1">
+                                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed text-light" data-bs-toggle="collapse" data-bs-target="#account-collapse" aria-expanded="false">
+                                    Аккаунт
+                                </button>
+                                <div class="collapse" id="account-collapse">
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                        {% if current_user.is_anonymous %}
+                                        <li><a href="{{ url_for('login') }}" class="link-light d-inline-flex text-decoration-none rounded">Войти</a></li>
+                                        {% else %}
+                                        <li><a href="#settings" class="link-light d-inline-flex fw-bold text-decoration-none rounded" id="user_settings_base_button">Настройки</a></li>
+                                        <li><a href="{{ url_for('logout') }}" class="link-light d-inline-flex fw-bold text-decoration-none rounded">Выйти</a></li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <main class="col-md-9 ms-sm-auto col-lg-10 px-md-1" id="base_main">
+                  {% block main %}
+                  {% endblock main %}
+                </main>
+                {% if current_user.access_panel is defined %}
+                  {% if current_user.access_panel.access is defined %}
+                    {% if current_user.access_panel.access.access_name is defined and current_user.access_panel.access.access_name != 'redactor' and current_user.access_panel.access.access_name != 'moderator' and current_user.access_panel.access.access_name != 'user' %}
+                    <div class="modal fade" id="modal_revocation_of_access_rights_in_the_panel_link" tabindex="-1" aria-labelledby="revocation_of_access_rights_in_the_panel_link" aria-hidden="true" data-bs-theme="dark">
+                      <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                          <h1 class="modal-title fs-5 text-decoration-none" id="revocation_of_access_rights_in_the_panel_link">Отзыв прав у пользователя в панели управления</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                              <form id="form_revocation_of_access_rights_in_the_panel_link">
+                                  <input type="hidden" name="csrf_token" value='{{ csrf_token() }}'>
+                                  <input type="hidden" name="method" value='revocation_of_access_link'>
+                                  <div class="mb-3">
+                                    <label for="link-text" class="col-form-label text-white">Ссылка на пользователя:</label>
+                                    <input type="text" class="form-control bg-dark-subtle" id="link-text" name="link_to_the_user" value="">
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                                    <button type="submit" class="btn btn-outline-success" id="form_revocation_of_access_rights_in_the_panel_button_submit_link">Отозвать</button>
+                                  </div>
+                              </form>
+                              <script>
+                                  $(document).ready(function () {
+                                    $("#form_revocation_of_access_rights_in_the_panel_link").submit(function () {
+                                        // Получение ID формы
+                                        var formID = $(this).attr('id');
+                                        // Добавление решётки к имени ID
+                                        var formNm = $('#' + formID);
+                                        $.ajax({
+                                            type: "POST",
+                                            url: '/access_rights_in_the_panel',
+                                            data: formNm.serialize(),
+                                            beforeSend: function () {
+                                              $("#form_revocation_of_access_rights_in_the_panel_button_submit_link").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Отзываю права...');
+                                            },
+                                            success: function () {
+                                              $("#form_revocation_of_access_rights_in_the_panel_button_submit_link").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Права отозваны');
+                                              setTimeout(function() {
+                                                $("#form_revocation_of_access_rights_in_the_panel_button_submit_link").html('Отозвать');
+                                                $('#modal_revocation_of_access_rights_in_the_panel_link').modal('hide');
+                                                $('.modal-backdrop').remove();
+                                              }, 500);
+                                            },
+                                            error: function (error_msg) {
+                                              // Вывод текста ошибки отправки
+                                              $("#form_revocation_of_access_rights_in_the_panel_button_submit_link").html('<span class="spinner-grow spinner-grow-sm text-danger" role="status" aria-hidden="true"></span>Ошибка отзыва прав');
+                                              setTimeout(function() {
+                                                $("#form_revocation_of_access_rights_in_the_panel_button_submit_link").html('Отозвать');
+                                              }, 2500);
+                                            }
+                                        });
+                                        return false;
+                                    });
+                                });
+                              </script>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal fade" id="modal_add_marathon_group" tabindex="-1" aria-labelledby="add_marathon_group" aria-hidden="true" data-bs-theme="dark">
+                      <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                          <h1 class="modal-title fs-5 text-decoration-none" id="add_marathon_group">Добавление группы марафона</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                              <form id="form_add_marathon_group">
+                                  <input type="hidden" name="csrf_token" value='{{ csrf_token() }}'>
+                                  <input type="hidden" name="method" value='add_marathon_group'>
+                                  <div class="mb-3">
+                                    <label for="input-group-token" class="col-form-label text-white">Токен группы:</label>
+                                    <input type="text" class="form-control bg-dark-subtle" id="input-group-token" name="token_group" value="" placeholder="Вставьте токен группы...">
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                                    <button type="submit" class="btn btn-outline-success" id="form_add_marathon_group_button_submit">Добавить</button>
+                                  </div>
+                              </form>
+                              <script>
+                                  $(document).ready(function () {
+                                    $("#form_add_marathon_group").submit(function () {
+                                        // Получение ID формы
+                                        var formID = $(this).attr('id');
+                                        // Добавление решётки к имени ID
+                                        var formNm = $('#' + formID);
+                                        $.ajax({
+                                            type: "POST",
+                                            url: '/managing_marathon_groups',
+                                            data: formNm.serialize(),
+                                            beforeSend: function () {
+                                              $("#form_add_marathon_group_button_submit").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Добавляю группу...');
+                                            },
+                                            success: function () {
+                                              $("#form_add_marathon_group_button_submit").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Группа добавлена');
+                                              setTimeout(function() {
+                                                document.get
+                                                document.getElementById("input-group-token").value = "";
+                                                $("#form_add_marathon_group_button_submit").html('Добавить группу');
+                                                $('#modal_add_marathon_group').modal('hide');
+                                                $('.modal-backdrop').remove();
+                                              },  500);
+                                            },
+                                            error: function (error_msg) {
+                                              // Вывод текста ошибки отправки
+                                              $("#form_add_marathon_group_button_submit").html('<span class="spinner-grow spinner-grow-sm text-danger" role="status" aria-hidden="true"></span>Ошибка добавления группы');
+                                              setTimeout(function() {
+                                                $("#form_add_marathon_group_button_submit").html('Добавить группу');
+                                              }, 2500);
+                                            }
+                                        });
+                                        return false;
+                                    });
+                                });
+                              </script>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal fade" id="modal_delete_marathon_group_link" tabindex="-1" aria-labelledby="delete_marathon_group_link" aria-hidden="true" data-bs-theme="dark">
+                      <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                          <h1 class="modal-title fs-5 text-decoration-none" id="delete_marathon_group_link">Вы действительно хотите удалить группу?</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                              <form id="form_delete_marathon_group_link">
+                                  <input type="hidden" name="csrf_token" value='{{ csrf_token() }}'>
+                                  <input type="hidden" name="method" value='delete_marathon_group_link'>
+                                  <div class="mb-3">
+                                    <label for="input-group-link" class="col-form-label text-white">Ссылка на группу:</label>
+                                    <input type="text" class="form-control bg-dark-subtle" id="input-group-link" name="link_to_the_group" value="" placeholder="Вставьте ссылку на группу...">
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                                    <button type="submit" class="btn btn-outline-danger" id="form_delete_marathon_group_link_button_submit">Удалить</button>
+                                  </div>
+                              </form>
+                              <script>
+                                  $(document).ready(function () {
+                                    $("#form_delete_marathon_group_link").submit(function () {
+                                        // Получение ID формы
+                                        var formID = $(this).attr('id');
+                                        // Добавление решётки к имени ID
+                                        var formNm = $('#' + formID);
+                                        $.ajax({
+                                            type: "POST",
+                                            url: '/managing_marathon_groups',
+                                            data: formNm.serialize(),
+                                            beforeSend: function () {
+                                              $("#form_delete_marathon_group_link_button_submit").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Удаляю группу...');
+                                            },
+                                            success: function () {
+                                              $("#form_delete_marathon_group_link_button_submit").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Группа удалена');
+                                              setTimeout(function() {
+                                                document.getElementById("input-group-link").value = "";
+                                                $("#form_delete_marathon_group_link_button_submit").html('Удалить');
+                                              }, 500);
+                                              $("#modal_delete_marathon_group_link").modal('hide');
+                                              $('.modal-backdrop').remove();
+                                            },
+                                            error: function (error_msg) {
+                                              // Вывод текста ошибки отправки
+                                              $("#form_delete_marathon_group_link_button_submit").html('<span class="spinner-grow spinner-grow-sm text-danger" role="status" aria-hidden="true"></span>Ошибка удаления группы');
+                                              setTimeout(function() {
+                                                $("#form_delete_marathon_group_link_button_submit").html('Удалить');
+                                              }, 2500);
+                                            }
+                                        });
+                                        return false;
+                                    });
+                                });
+                              </script>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal fade" id="modal_add_table_link" tabindex="-1" aria-labelledby="add_table_link" aria-hidden="true" data-bs-theme="dark">
+                      <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                          <h1 class="modal-title fs-5 text-decoration-none" id="add_table_link">Добавление таблицы</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                              <form id="form_add_table_link">
+                                  <input type="hidden" name="csrf_token" value='{{ csrf_token() }}'>
+                                  <input type="hidden" name="method" value='add_google_spreadsheet'>
+                                  <div class="mb-3">
+                                    <label for="input-group-link" class="col-form-label text-white">Ссылка на таблицу:</label>
+                                    <input type="text" class="form-control bg-dark-subtle" id="input-table-link" name="link_to_the_table" value="" placeholder="Вставьте ссылку на таблицу..." required>
+                                  </div>
+                                  <div class="mb-3">
+                                    <label class="col-form-label text-white">В таблице есть колонка с именем пользователя?</label>
+                                    <div class="form-check">
+                                      <input class="form-check-input user_name_column" type="radio" value="True" name="user_name_column" id="RadioUserNameOne">
+                                      <label class="form-check-label text-white" for="RadioUserNameOne">
+                                        Есть
+                                      </label>
+                                    </div>
+                                    <div class="form-check">
+                                      <input class="form-check-input user_name_column" type="radio" value="False" name="user_name_column" id="RadioUserNameTwo" checked>
+                                      <label class="form-check-label text-white" for="RadioUserNameTwo">
+                                        Нету
+                                      </label>
+                                    </div>
+                                    <div id="initial_word_radio_user_name" style="display:none;">
+                                      <label class="col-form-label text-white">Как называется колонка с именем пользователя?</label>
+                                      <input type="text" class="form-control bg-dark-subtle" id="input-name-user-name-column" name="name_user_name_column" value="" placeholder="Введите название колонки...">
+                                    </div>
+                                  </div>
+                                  <div class="mb-3">
+                                    <label class="col-form-label text-white">В таблице есть колонка с фамилией пользователя?</label>
+                                    <div class="form-check">
+                                      <input class="form-check-input last_name_column" type="radio" value="True" name="user_last_name_column" id="RadioUserLastNameOne">
+                                      <label class="form-check-label text-white" for="RadioUserLastNameOne">
+                                        Есть
+                                      </label>
+                                    </div>
+                                    <div class="form-check">
+                                      <input class="form-check-input last_name_column" type="radio" value="False" name="user_last_name_column" id="RadioUserLastNameTwo" checked>
+                                      <label class="form-check-label text-white" for="RadioUserLastNameTwo">
+                                        Нету
+                                      </label>
+                                    </div>
+                                    <div id="initial_word_radio_user_last_name" style="display:none;">
+                                      <label class="col-form-label text-white">Как называется колонка с фамилией пользователя?</label>
+                                      <input type="text" class="form-control bg-dark-subtle" id="input-name-user-last-name-column" name="name_user_last_name_column" value="" placeholder="Введите название колонки...">
+                                    </div>
+                                  </div>
+                                  <div class="mb-3">
+                                    <label class="col-form-label text-white">В таблице есть колонка с VK ссылкой пользователя?</label>
+                                    <div class="form-check">
+                                      <input class="form-check-input reference_column" type="radio" value="True" name="user_reference_name_column" id="RadioUserReferenceOne">
+                                      <label class="form-check-label text-white" for="RadioUserReferenceOne">
+                                        Есть
+                                      </label>
+                                    </div>
+                                    <div class="form-check">
+                                      <input class="form-check-input reference_column" type="radio" value="False" name="user_reference_name_column" id="RadioUserReferenceTwo" checked>
+                                      <label class="form-check-label text-white" for="RadioUserReferenceTwo">
+                                        Нету
+                                      </label>
+                                    </div>
+                                    <div id="initial_word_radio_user_reference" style="display:none;">
+                                      <label class="col-form-label text-white">Как называется колонка с VK ссылкой пользователя?</label>
+                                      <input type="text" class="form-control bg-dark-subtle" id="input-name-user-reference-column" name="name_user_reference_column" value="" placeholder="Введите название колонки...">
+                                    </div>
+                                  </div>
+                                  <div class="mb-3">
+                                    <label class="col-form-label text-white">В таблице есть колонка с VK ссылкой группы пользователя?</label>
+                                    <div class="form-check">
+                                      <input class="form-check-input group_column" type="radio" value="True" name="user_group_name_column" id="RadioUserGroupOne">
+                                      <label class="form-check-label text-white" for="RadioUserGroupOne">
+                                        Есть
+                                      </label>
+                                    </div>
+                                    <div class="form-check">
+                                      <input class="form-check-input group_column" type="radio" value="False" name="user_group_name_column" id="RadioUserGroupTwo" checked>
+                                      <label class="form-check-label text-white" for="RadioUserGroupTwo">
+                                        Нету
+                                      </label>
+                                    </div>
+                                    <div id="initial_word_radio_group_column" style="display:none;">
+                                      <label class="col-form-label text-white">Как называется колонка с VK ссылкой пользователя?</label>
+                                      <input type="text" class="form-control bg-dark-subtle" id="input-name-user-group-column" name="name_user_group_column" value="" placeholder="Введите название колонки...">
+                                    </div>
+                                  </div>
+                                  <div class="mb-3">
+                                    <label class="col-form-label text-white">В таблице есть колонка с названием кабинета пользователя?</label>
+                                    <div class="form-check">
+                                      <input class="form-check-input name_cabinet_column" type="radio" value="True" name="user_name_cabinet_name_column" id="RadioUserCabinetOne">
+                                      <label class="form-check-label text-white" for="RadioUserCabinetOne">
+                                        Есть
+                                      </label>
+                                    </div>
+                                    <div class="form-check">
+                                      <input class="form-check-input name_cabinet_column" type="radio" value="False" name="user_name_cabinet_name_column" id="RadioUserCabinetTwo" checked>
+                                      <label class="form-check-label text-white" for="RadioUserCabinetTwo">
+                                        Нету
+                                      </label>
+                                    </div>
+                                    <div id="initial_word_radio_name_cabinet_column" style="display:none;">
+                                      <label class="col-form-label text-white">Как называется колонка с названием кабинета пользователя?</label>
+                                      <input type="text" class="form-control bg-dark-subtle" id="input-name-user-name-cabinet-column" name="name_name_cabinet_column" value="" placeholder="Введите название колонки...">
+                                    </div>
+                                  </div>
+                                  <div class="mb-3">
+                                    <label class="col-form-label text-white">В таблице есть колонка с рубрикой группы пользователя?</label>
+                                    <div class="form-check">
+                                      <input class="form-check-input name_headings_column" type="radio" value="True" name="headings_name_column" id="RadioHeadingsOne">
+                                      <label class="form-check-label text-white" for="RadioHeadingsOne">
+                                        Есть
+                                      </label>
+                                    </div>
+                                    <div class="form-check">
+                                      <input class="form-check-input name_headings_column" type="radio" value="False" name="headings_name_column" id="RadioHeadingsTwo" checked>
+                                      <label class="form-check-label text-white" for="RadioHeadingsTwo">
+                                        Нету
+                                      </label>
+                                    </div>
+                                    <div id="initial_word_radio_name_headings_column" style="display:none;">
+                                      <label class="col-form-label text-white">Как называется колонка с рубрикой группы пользователя?</label>
+                                      <input type="text" class="form-control bg-dark-subtle" id="input-name-headings-column" name="name_headings_column" value="" placeholder="Введите название колонки...">
+                                    </div>
+                                  </div>
+                                  <div class="mb-3">
+                                    <label class="col-form-label text-white">В таблице есть колонка со стоп-контентом?</label>
+                                    <div class="form-check">
+                                      <input class="form-check-input name_stop_content_column" type="radio" value="True" name="stop_content_name_column" id="RadioStopContentOne">
+                                      <label class="form-check-label text-white" for="RadioStopContentOne">
+                                        Есть
+                                      </label>
+                                    </div>
+                                    <div class="form-check">
+                                      <input class="form-check-input name_stop_content_column" type="radio" value="False" name="stop_content_name_column" id="RadioStopContentTwo" checked>
+                                      <label class="form-check-label text-white" for="RadioStopContentTwo">
+                                        Нету
+                                      </label>
+                                    </div>
+                                    <div id="initial_word_radio_name_stop_content_column" style="display:none;">
+                                      <label class="col-form-label text-white">Как называется колонка со стоп-контентом?</label>
+                                      <input type="text" class="form-control bg-dark-subtle" id="input-name-stop-content-column" name="name_stop_content_column" value="" placeholder="Введите название колонки...">
+                                    </div>
+                                  </div>
+                                  <div class="mb-3">
+                                    <label class="col-form-label text-white">В таблице есть колонка с текстом для рекламы?</label>
+                                    <div class="form-check">
+                                      <input class="form-check-input name_ad_text_column" type="radio" value="True" name="ad_text_name_column" id="RadioAdTextOne">
+                                      <label class="form-check-label text-white" for="RadioAdTextOne">
+                                        Есть
+                                      </label>
+                                    </div>
+                                    <div class="form-check">
+                                      <input class="form-check-input name_ad_text_column" type="radio" value="False" name="ad_text_name_column" id="RadioAdTextTwo" checked>
+                                      <label class="form-check-label text-white" for="RadioAdTextTwo">
+                                        Нету
+                                      </label>
+                                    </div>
+                                    <div id="initial_word_radio_name_ad_text_column" style="display:none;">
+                                      <label class="col-form-label text-white">Как называется колонка с текстом для рекламы?</label>
+                                      <input type="text" class="form-control bg-dark-subtle" id="input-name-ad-text-column" name="name_ad_text_column" value="" placeholder="Введите название колонки...">
+                                    </div>
+                                  </div>
+                                  <div class="mb-3">
+                                    <label class="col-form-label text-white">В таблице есть колонка с медиа контентом для рекламы?</label>
+                                    <div class="form-check">
+                                      <input class="form-check-input name_ad_media_column" type="radio" value="True" name="ad_media_name_column" id="RadioAdMediaOne">
+                                      <label class="form-check-label text-white" for="RadioAdMediaOne">
+                                        Есть
+                                      </label>
+                                    </div>
+                                    <div class="form-check">
+                                      <input class="form-check-input name_ad_media_column" type="radio" value="False" name="ad_media_name_column" id="RadioAdMediaTwo" checked>
+                                      <label class="form-check-label text-white" for="RadioAdMediaTwo">
+                                        Нету
+                                      </label>
+                                    </div>
+                                    <div id="initial_word_radio_name_ad_media_column" style="display:none;">
+                                      <label class="col-form-label text-white">Как называется колонка с медиа контентом для рекламы?</label>
+                                      <input type="text" class="form-control bg-dark-subtle" id="input-name-ad-media-column" name="name_ad_media_column" value="" placeholder="Введите название колонки...">
+                                    </div>
+                                  </div>
+                                  <div class="mb-3">
+                                    <label class="col-form-label text-white">В таблице есть колонка с целевой аудиторией для рекламы?</label>
+                                    <div class="form-check">
+                                      <input class="form-check-input name_target_audience_column" type="radio" value="True" name="target_audience_name_column" id="RadioTargetAudienceOne">
+                                      <label class="form-check-label text-white" for="RadioTargetAudienceOne">
+                                        Есть
+                                      </label>
+                                    </div>
+                                    <div class="form-check">
+                                      <input class="form-check-input name_target_audience_column" type="radio" value="False" name="target_audience_name_column" id="RadioTargetAudienceTwo" checked>
+                                      <label class="form-check-label text-white" for="RadioTargetAudienceTwo">
+                                        Нету
+                                      </label>
+                                    </div>
+                                    <div id="initial_word_radio_name_target_audience_column" style="display:none;">
+                                      <label class="col-form-label text-white">Как называется колонка с целевой аудиторией для рекламы?</label>
+                                      <input type="text" class="form-control bg-dark-subtle" id="input-name-target-audience-column" name="name_target_audience_column" value="" placeholder="Введите название колонки...">
+                                    </div>
+                                  </div>
+                                  <div class="mb-3">
+                                    <label class="col-form-label text-white">В таблице есть колонка с просьбой остановить продвижение?</label>
+                                    <div class="form-check">
+                                      <input class="form-check-input name_request_stop_column" type="radio" value="True" name="request_stop_name_column" id="RadioRequestStopOne">
+                                      <label class="form-check-label text-white" for="RadioRequestStopOne">
+                                        Есть
+                                      </label>
+                                    </div>
+                                    <div class="form-check">
+                                      <input class="form-check-input name_request_stop_column" type="radio" value="False" name="request_stop_name_column" id="RadioRequestStopTwo" checked>
+                                      <label class="form-check-label text-white" for="RadioRequestStopTwo">
+                                        Нету
+                                      </label>
+                                    </div>
+                                    <div id="initial_word_radio_name_request_stop_column" style="display:none;">
+                                      <label class="col-form-label text-white">Как называется колонка с просьбой остановить продвижение?</label>
+                                      <input type="text" class="form-control bg-dark-subtle" id="input-name-request-stop-column" name="name_request_stop_column" value="" placeholder="Введите название колонки...">
+                                    </div>
+                                  </div>
+                                  <div class="mb-3">
+                                    <label class="col-form-label text-white">В таблице есть колонка со статусом готовности группы пользователя к продвижению?</label>
+                                    <div class="form-check">
+                                      <input class="form-check-input name_launch_status_column" type="radio" value="True" name="launch_status_name_column" id="RadioLaunchStatusOne">
+                                      <label class="form-check-label text-white" for="RadioLaunchStatusOne">
+                                        Есть
+                                      </label>
+                                    </div>
+                                    <div class="form-check">
+                                      <input class="form-check-input name_launch_status_column" type="radio" value="False" name="launch_status_name_column" id="RadioLaunchStatusTwo" checked>
+                                      <label class="form-check-label text-white" for="RadioLaunchStatusTwo">
+                                        Нету
+                                      </label>
+                                    </div>
+                                    <div id="initial_word_radio_name_launch_status_column" style="display:none;">
+                                      <label class="col-form-label text-white">Как называется колонка со статусом готовности группы пользователя к продвижению?</label>
+                                      <input type="text" class="form-control bg-dark-subtle" id="input-name-launch-status-column" name="name_launch_status_column" value="" placeholder="Введите название колонки...">
+                                    </div>
+                                  </div>
+                                  <div class="mb-3">
+                                    <label class="col-form-label text-white">В таблице есть колонка/колонки с заданиями?</label>
+                                    <div class="form-check">
+                                      <input class="form-check-input name_tasks_column" type="radio" value="True" name="tasks_name_column" id="RadioTasksOne">
+                                      <label class="form-check-label text-white" for="RadioTasksOne">
+                                        Есть
+                                      </label>
+                                    </div>
+                                    <div class="form-check">
+                                      <input class="form-check-input name_tasks_column" type="radio" value="False" name="tasks_name_column" id="RadioTasksTwo" checked>
+                                      <label class="form-check-label text-white" for="RadioTasksTwo">
+                                        Нету
+                                      </label>
+                                    </div>
+                                    <div id="initial_word_radio_name_tasks_column" style="display:none;">
+                                      <label class="col-form-label text-white">
+                                        Как начинается название колонки/колонок с заданиями?
+                                      </label>
+                                      <br>
+                                      <label class="col-form-label text-white">
+                                        Пример:
+                                        У колонок названия: Урок №1 (Название, статус и описание страницы), Урок №2 (Пост-знакомство и запись с кнопкой), нужно вписать в поле ниже, часть "Урок №", т.к у колонок с заданиями это общая часть.
+                                      </label>
+                                      <br />
+                                      <input type="text" class="form-control bg-dark-subtle" id="input-name-tasks-column" name="name_tasks_column" value="" placeholder="Введите название колонки...">
+                                      <label class="col-form-label text-white">Сколько всего заданий в данной таблице марафона?</label>
+                                      <input class="form-control bg-dark-subtle" type="number" value="" name="number_of_tasks" min="0" step="1" placeholder="Сколько всего заданий?" id="NumberTasks">
+                                    </div>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                                    <button type="submit" class="btn btn-outline-success" id="form_add_table_link_button_submit">Добавить</button>
+                                  </div>
+                              </form>
+                              <script>
+                                $(document).ready(function() {
+                                  $(".user_name_column").change(function() {
+                                    if ($('#RadioUserNameOne').prop("checked")) {
+                                      $('#initial_word_radio_user_name').fadeIn(300);
+                                    } else {
+                                      document.getElementById("input-name-user-name-column").value = "";
+                                      $('#initial_word_radio_user_name').fadeOut(300);
+                                    }
+                                  });
+                                  $(".last_name_column").change(function() {
+                                    if ($('#RadioUserLastNameOne').prop("checked")) {
+                                      $('#initial_word_radio_user_last_name').fadeIn(300);
+                                    } else {
+                                      document.getElementById("input-name-user-last-name-column").value = "";
+                                      $('#initial_word_radio_user_last_name').fadeOut(300);
+                                    }
+                                  });
+                                  $(".reference_column").change(function() {
+                                    if ($('#RadioUserReferenceOne').prop("checked")) {
+                                      $('#initial_word_radio_user_reference').fadeIn(300);
+                                    } else {
+                                      document.getElementById("input-name-user-reference-column").value = "";
+                                      $('#initial_word_radio_user_reference').fadeOut(300);
+                                    }
+                                  });
+                                  $(".group_column").change(function() {
+                                    if ($('#RadioUserGroupOne').prop("checked")) {
+                                      $('#initial_word_radio_group_column').fadeIn(300);
+                                    } else {
+                                      document.getElementById("input-name-user-group-column").value = "";
+                                      $('#initial_word_radio_group_column').fadeOut(300);
+                                    }
+                                  });
+                                  $(".name_cabinet_column").change(function() {
+                                    if ($('#RadioUserCabinetOne').prop("checked")) {
+                                      $('#initial_word_radio_name_cabinet_column').fadeIn(300);
+                                    } else {
+                                      document.getElementById("input-name-user-name-cabinet-column").value = "";
+                                      $('#initial_word_radio_name_cabinet_column').fadeOut(300);
+                                    }
+                                  });
+                                  $(".name_headings_column").change(function() {
+                                    if ($('#RadioHeadingsOne').prop("checked")) {
+                                      $('#initial_word_radio_name_headings_column').fadeIn(300);
+                                    } else {
+                                      document.getElementById("input-name-headings-column").value = "";
+                                      $('#initial_word_radio_name_headings_column').fadeOut(300);
+                                    }
+                                  });
+                                  $(".name_stop_content_column").change(function() {
+                                    if ($('#RadioStopContentOne').prop("checked")) {
+                                      $('#initial_word_radio_name_stop_content_column').fadeIn(300);
+                                    } else {
+                                      document.getElementById("input-name-stop-content-column").value = "";
+                                      $('#initial_word_radio_name_stop_content_column').fadeOut(300);
+                                    }
+                                  });
+                                  $(".name_ad_text_column").change(function() {
+                                    if ($('#RadioAdTextOne').prop("checked")) {
+                                      $('#initial_word_radio_name_ad_text_column').fadeIn(300);
+                                    } else {
+                                      document.getElementById("input-name-ad-text-column").value = "";
+                                      $('#initial_word_radio_name_ad_text_column').fadeOut(300);
+                                    }
+                                  });
+                                  $(".name_ad_media_column").change(function() {
+                                    if ($('#RadioAdMediaOne').prop("checked")) {
+                                      $('#initial_word_radio_name_ad_media_column').fadeIn(300);
+                                    } else {
+                                      document.getElementById("input-name-ad-media-column").value = "";
+                                      $('#initial_word_radio_name_ad_media_column').fadeOut(300);
+                                    }
+                                  });
+                                  $(".name_target_audience_column").change(function() {
+                                    if ($('#RadioTargetAudienceOne').prop("checked")) {
+                                      $('#initial_word_radio_name_target_audience_column').fadeIn(300);
+                                    } else {
+                                      document.getElementById("input-name-target-audience-column").value = "";
+                                      $('#initial_word_radio_name_target_audience_column').fadeOut(300);
+                                    }
+                                  });
+                                  $(".name_request_stop_column").change(function() {
+                                    if ($('#RadioRequestStopOne').prop("checked")) {
+                                      $('#initial_word_radio_name_request_stop_column').fadeIn(300);
+                                    } else {
+                                      document.getElementById("input-name-request-stop-column").value = "";
+                                      $('#initial_word_radio_name_request_stop_column').fadeOut(300);
+                                    }
+                                  });
+                                  $(".name_launch_status_column").change(function() {
+                                    if ($('#RadioLaunchStatusOne').prop("checked")) {
+                                      $('#initial_word_radio_name_launch_status_column').fadeIn(300);
+                                    } else {
+                                      document.getElementById("input-name-launch-status-column").value = "";
+                                      $('#initial_word_radio_name_launch_status_column').fadeOut(300);
+                                    }
+                                  });
+                                  $(".name_tasks_column").change(function() {
+                                    if ($('#RadioTasksOne').prop("checked")) {
+                                      $('#initial_word_radio_name_tasks_column').fadeIn(300);
+                                    } else {
+                                      document.getElementById("input-name-tasks-column").value = "";
+                                      document.getElementById("NumberTasks").value = "";
+                                      $('#initial_word_radio_name_tasks_column').fadeOut(300);
+                                    }
+                                  });
+                                });
+                              </script>
+                              <script>
+                                  $(document).ready(function () {
+                                    $("#form_add_table_link").submit(function () {
+                                        // Получение ID формы
+                                        var formID = $(this).attr('id');
+                                        // Добавление решётки к имени ID
+                                        var formNm = $('#' + formID);
+                                        $.ajax({
+                                            type: "POST",
+                                            url: '/managing_google_spreadsheet',
+                                            data: formNm.serialize(),
+                                            beforeSend: function () {
+                                              $("#form_add_table_link_button_submit").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Добавляю таблицу...');
+                                            },
+                                            success: function () {
+                                              $("#form_add_table_link_button_submit").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Таблица добавлена');
+                                              setTimeout(function() {
+                                                document.getElementById("input-table-link").value = "";
+                                                $("#form_add_table_link_button_submit").html('Добавить');
+                                              }, 500);
+                                              $("#modal_add_table_link").modal('hide');
+                                              $('.modal-backdrop').remove();
+                                            },
+                                            error: function (error_msg) {
+                                              // Вывод текста ошибки отправки
+                                              $("#form_add_table_link_button_submit").html('<span class="spinner-grow spinner-grow-sm text-danger" role="status" aria-hidden="true"></span>Ошибка добавления таблицы');
+                                              setTimeout(function() {
+                                                $("#form_add_table_link_button_submit").html('Добавить');
+                                              }, 2500);
+                                            }
+                                        });
+                                        return false;
+                                    });
+                                });
+                              </script>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal fade" id="modal_deleting_google_tables_id" tabindex="-1" aria-labelledby="deleting_google_tables_id" aria-hidden="true" data-bs-theme="dark">
+                      <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                          <h1 class="modal-title fs-5 text-decoration-none" id="deleting_google_tables_id">Удаление таблицы Google</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                              {% if list_tables != [] %}
+                              <form id="form_deleting_google_tables_id">
+                                  <div class="mb-3" style="margin:0 auto;">
+                                    <label for="access-rights" class="form-label text-white">Таблица марафона:</label>
+                                    <select class="form-select bg-dark-subtle" id="delete_google_table" style="text-align: center;" required>
+                                    {% if current_user.access_panel is defined %}
+                                      {% if current_user.access_panel.access is defined %}
+                                        {% if current_user.access_panel.access.access_name is defined %}
+                                          {% if current_user.access_panel.access.access_name == 'superuser' or current_user.access_panel.access.access_name == 'administrator' %}
+                                            {% for table in list_tables %}
+                                              <option value="{{ table.id }}">{{ table.name }}</option>
+                                            {% endfor %}
+                                          {% endif %}
+                                        {% endif %}
+                                      {% endif %}
+                                    {% endif %}
+                                    </select>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                                    <button type="submit" class="btn btn-outline-danger" id="form_deleting_google_tables_button_submit_id">Удалить</button>
+                                  </div>
+                              </form>
+                              {% endif %}
+                              <script>
+                                  $(document).ready(function () {
+                                    $("#form_deleting_google_tables_id").submit(function () {
+                                        // Получение ID формы
+                                        var formID = $(this).attr('id');
+                                        // Добавление решётки к имени ID
+                                        var formNm = $('#' + formID);
+                                        $.ajax({
+                                            type: "POST",
+                                            url: '/managing_google_spreadsheet',
+                                            data: {'csrf_token': '{{ csrf_token() }}', 'method': 'delete_google_spreadsheet', 'table_id': document.getElementById("delete_google_table").value},
+                                            beforeSend: function () {
+                                              $("#form_deleting_google_tables_button_submit_id").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Удаляю таблицу...');
+                                            },
+                                            success: function () {
+                                              $("#form_deleting_google_tables_button_submit_id").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Таблица удалена');
+                                              setTimeout(function() {
+                                                $("#form_deleting_google_tables_button_submit_id").html('Удалить');
+                                              }, 500);
+                                              $("#modal_deleting_google_tables_id").modal('hide');
+                                              $('.modal-backdrop').remove();
+                                            },
+                                            error: function (error_msg) {
+                                              // Вывод текста ошибки отправки
+                                              $("#form_deleting_google_tables_button_submit_id").html('<span class="spinner-grow spinner-grow-sm text-danger" role="status" aria-hidden="true"></span>Ошибка удаления');
+                                              setTimeout(function() {
+                                                $("#form_deleting_google_tables_button_submit_id").html('Удалить');
+                                              }, 2500);
+                                            }
+                                        });
+                                        return false;
+                                    });
+                                });
+                              </script>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal fade" id="modal_granting_the_user_access_to_the_panel" tabindex="-1" aria-labelledby="granting_the_user_access_to_the_panel" aria-hidden="true" data-bs-theme="dark">
+                      <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                          <h1 class="modal-title fs-5 text-decoration-none" id="granting_the_user_access_to_the_panel">Выдача пользователю доступа к панели управления</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                              <form id="form_granting_the_user_access_to_the_panel">
+                                  <input type="hidden" name="csrf_token" value='{{ csrf_token() }}'>
+                                  <input type="hidden" name="method" value='granting_access_to_the_panel'>
+                                  <div class="mb-3">
+                                    <label for="link-text" class="col-form-label text-white">Ссылка на пользователя:</label>
+                                    <input type="text" class="form-control bg-dark-subtle" id="link-text" name="vk_link" value="">
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                                    <button type="submit" class="btn btn-outline-success" id="form_granting_the_user_access_to_the_panel_button_submit">Выдать</button>
+                                  </div>
+                              </form>
+                              <script>
+                                  $(document).ready(function () {
+                                    $("#form_granting_the_user_access_to_the_panel").submit(function () {
+                                        // Получение ID формы
+                                        var formID = $(this).attr('id');
+                                        // Добавление решётки к имени ID
+                                        var formNm = $('#' + formID);
+                                        $.ajax({
+                                            type: "POST",
+                                            url: '/managing_access_to_the_panel',
+                                            data: formNm.serialize(),
+                                            beforeSend: function () {
+                                              $("#form_granting_the_user_access_to_the_panel_button_submit").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Выдаю доступ...');
+                                            },
+                                            success: function () {
+                                              $("#form_granting_the_user_access_to_the_panel_button_submit").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Доступ выдан');
+                                              setTimeout(function() {
+                                                $("#form_granting_the_user_access_to_the_panel_button_submit").html('Выдать');
+                                                $('#modal_granting_the_user_access_to_the_panel').modal('hide');
+                                                $('.modal-backdrop').remove();
+                                              }, 500);
+                                            },
+                                            error: function (error_msg) {
+                                              // Вывод текста ошибки отправки
+                                              $("#form_granting_the_user_access_to_the_panel_button_submit").html('<span class="spinner-grow spinner-grow-sm text-danger" role="status" aria-hidden="true"></span>Ошибка выдачи доступа');
+                                              setTimeout(function() {
+                                                $("#form_granting_the_user_access_to_the_panel_button_submit").html('Выдать');
+                                              }, 2500);
+                                            }
+                                        });
+                                        return false;
+                                    });
+                                });
+                              </script>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal fade" id="modal_removing_user_access_to_the_panel" tabindex="-1" aria-labelledby="removing_user_access_to_the_panel" aria-hidden="true" data-bs-theme="dark">
+                      <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                          <h1 class="modal-title fs-5 text-decoration-none" id="removing_user_access_to_the_panel">Отзыв у пользователя доступа к панели управления</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                              <form id="form_removing_user_access_to_the_panel">
+                                  <input type="hidden" name="csrf_token" value='{{ csrf_token() }}'>
+                                  <input type="hidden" name="method" value='removing_user_access_to_the_panel'>
+                                  <div class="mb-3">
+                                    <label for="link-text" class="col-form-label text-white">Ссылка на пользователя:</label>
+                                    <input type="text" class="form-control bg-dark-subtle" id="link-text" name="vk_link" value="">
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                                    <button type="submit" class="btn btn-outline-danger" id="form_removing_user_access_to_the_panel_button_submit">Отозвать</button>
+                                  </div>
+                              </form>
+                              <script>
+                                  $(document).ready(function () {
+                                    $("#form_removing_user_access_to_the_panel").submit(function () {
+                                        // Получение ID формы
+                                        var formID = $(this).attr('id');
+                                        // Добавление решётки к имени ID
+                                        var formNm = $('#' + formID);
+                                        $.ajax({
+                                            type: "POST",
+                                            url: '/managing_access_to_the_panel',
+                                            data: formNm.serialize(),
+                                            beforeSend: function () {
+                                              $("#form_removing_user_access_to_the_panel_button_submit").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Отзываю доступ...');
+                                            },
+                                            success: function () {
+                                              $("#form_removing_user_access_to_the_panel_button_submit").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Доступ отозван');
+                                              setTimeout(function() {
+                                                $("#form_removing_user_access_to_the_panel_button_submit").html('Отозвать');
+                                                $('#modal_removing_user_access_to_the_panel').modal('hide');
+                                                $('.modal-backdrop').remove();
+                                              }, 500);
+                                            },
+                                            error: function (error_msg) {
+                                              // Вывод текста ошибки отправки
+                                              $("#form_removing_user_access_to_the_panel_button_submit").html('<span class="spinner-grow spinner-grow-sm text-danger" role="status" aria-hidden="true"></span>Ошибка отзыва доступа');
+                                              setTimeout(function() {
+                                                $("#form_removing_user_access_to_the_panel_button_submit").html('Отозвать');
+                                              }, 2500);
+                                            }
+                                        });
+                                        return false;
+                                    });
+                                });
+                              </script>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {% if current_user.access_panel.access.access_name is defined and current_user.access_panel.access.access_name != 'moderator' and current_user.access_panel.access.access_name != 'user' %}
+                    <div class="modal fade" id="modal_granting_access_rights_in_the_panel_link" tabindex="-1" aria-labelledby="access_rights_in_the_panel_link" aria-hidden="true" data-bs-theme="dark">
+                      <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                          <h1 class="modal-title fs-5 text-decoration-none" id="access_rights_in_the_panel_link">Выдача прав пользователю в панели управления</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                              <form id="form_granting_access_rights_in_the_panel_link">
+                                  <input type="hidden" name="csrf_token" value='{{ csrf_token() }}'>
+                                  <input type="hidden" name="method" value='granting_access_link'>
+                                  <div class="mb-3">
+                                    <label for="link-text" class="col-form-label text-white">Ссылка на пользователя:</label>
+                                    <input type="text" class="form-control bg-dark-subtle" id="link-text" name="link_to_the_user" value="">
+                                  </div>
+                                  <div class="mb-3" style="margin:0 auto;">
+                                    <label for="access-rights" class="form-label text-white">Права доступа к панели:</label>
+                                    <select class="form-select bg-dark-subtle" name="access_name" style="text-align: center;" required>
+                                      {% if current_user.access_panel is defined %}
+                                        {% if current_user.access_panel.access is defined %}
+                                          {% if current_user.access_panel.access.access_name is defined %}
+                                            {% if current_user.access_panel.access.access_name == 'superuser' %}
+                                              <option value="superuser" selected>Суперпользователь</option>
+                                              <option value="administrator">Администратор</option>
+                                              <option value="redactor">Редактор</option>
+                                              <option value="moderator">Модератор</option>
+                                              <option value="user">Пользователь</option>
+                                            {% elif current_user.access_panel.access.access_name == 'administrator' %}
+                                              <option value="redactor">Редактор</option>
+                                              <option value="moderator">Модератор</option>
+                                              <option value="user">Пользователь</option>
+                                            {% elif current_user.access_panel.access.access_name == 'redactor' %}
+                                              <option value="moderator">Модератор</option>
+                                              <option value="user">Пользователь</option>
+                                            {% endif %}
+                                          {% endif %}
+                                        {% endif %}
+                                      {% endif %}
+                                    </select>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                                    <button type="submit" class="btn btn-outline-success" id="form_granting_access_rights_in_the_panel_button_submit_link">Выдать</button>
+                                  </div>
+                              </form>
+                              <script>
+                                  $(document).ready(function () {
+                                    $("#form_granting_access_rights_in_the_panel_link").submit(function () {
+                                        // Получение ID формы
+                                        var formID = $(this).attr('id');
+                                        // Добавление решётки к имени ID
+                                        var formNm = $('#' + formID);
+                                        $.ajax({
+                                            type: "POST",
+                                            url: '/access_rights_in_the_panel',
+                                            data: formNm.serialize(),
+                                            beforeSend: function () {
+                                              $("#form_granting_access_rights_in_the_panel_button_submit_link").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Выдаю права...');
+                                            },
+                                            success: function () {
+                                              $("#form_granting_access_rights_in_the_panel_button_submit_link").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Права выданы');
+                                              setTimeout(function() {
+                                                $("#form_granting_access_rights_in_the_panel_button_submit_link").html('Выдать');
+                                                $('#modal_granting_access_rights_in_the_panel_link').modal('hide');
+                                                $('.modal-backdrop').remove();
+                                              },  500);
+                                            },
+                                            error: function (error_msg) {
+                                              // Вывод текста ошибки отправки
+                                              $("#form_granting_access_rights_in_the_panel_button_submit_link").html('<span class="spinner-grow spinner-grow-sm text-danger" role="status" aria-hidden="true"></span>Ошибка выдачи прав');
+                                              setTimeout(function() {
+                                                $("#form_granting_access_rights_in_the_panel_button_submit_link").html('Выдать');
+                                              }, 2500);
+                                            }
+                                        });
+                                        return false;
+                                    });
+                                });
+                              </script>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                  {% endif %}
+                {% endif %}
+                <div class="modal fade" id="modal_faq_access_rights_in_the_panel" tabindex="-1" aria-labelledby="faq_access_rights_in_the_panel" aria-hidden="true" data-bs-theme="dark">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                      <h1 class="modal-title fs-5 text-decoration-none" id="faq_access_rights_in_the_panel">Всё о правах в панели управления</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="accordion" id="FaqAccessRights">
+                          <div class="accordion-item">
+                            <h2 class="accordion-header">
+                              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#AccessRightsAll" aria-expanded="true" aria-controls="AccessRightsAll">
+                                Что такое права?
+                              </button>
+                            </h2>
+                            <div id="AccessRightsAll" class="accordion-collapse collapse show" data-bs-parent="#FaqAccessRights">
+                              <div class="accordion-body">
+                                <strong>Права отвечают за доступ к административному функционалу панели.</strong><br>
+                                <br>
+                                Существует 5 видов прав доступа, которые открывают, либо ограничивают доступ к функционалу.<br>
+                                <br>
+                                <strong>Выдавать права стоит только доверенным лицам.</strong><br>
+                                <br>
+                                Перед выдачей прав, ознакомьтесь с функционалом который получит доверенное лицо при выдаче данных прав.
+                              </div>
+                            </div>
+                          </div>
+                          <div class="accordion-item">
+                            <h2 class="accordion-header">
+                              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#AccessRightsSuperuser" aria-expanded="false" aria-controls="AccessRightsSuperuser">
+                                Что может пользователь с правами «Суперпользователь»?
+                              </button>
+                            </h2>
+                            <div id="AccessRightsSuperuser" class="accordion-collapse collapse" data-bs-parent="#FaqAccessRights">
+                              <div class="accordion-body">
+                                <ul>
+                                  <strong>
+                                    <li>Выдавать все виды прав.</li>
+                                    <li>Отзывать права у пользователей ниже по статусу.</li>
+                                    <li>Добавлять и отключать группы марафонов.</li>
+                                    <li>Распределять кураторов по группам.</li>
+                                    <li>Проводить рассылки участникам марафонов.</li>
+                                    <li>Отслеживать активность кураторов и следить за их работой.</li>
+                                  </strong>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="accordion-item">
+                            <h2 class="accordion-header">
+                              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#AccessRightsAdministrator" aria-expanded="false" aria-controls="AccessRightsAdministrator">
+                                Что может пользователь с правами «Администратор»?
+                              </button>
+                            </h2>
+                            <div id="AccessRightsAdministrator" class="accordion-collapse collapse" data-bs-parent="#FaqAccessRights">
+                              <div class="accordion-body">
+                                <ul>
+                                  <strong>
+                                    <li>Выдавать права ниже по статусу.</li>
+                                    <li>Отзывать права у пользователей ниже по статусу.</li>
+                                    <li>Добавлять и отключать группы марафонов.</li>
+                                    <li>Распределять кураторов по группам.</li>
+                                    <li>Проводить рассылки участникам марафонов.</li>
+                                    <li>Отслеживать активность кураторов и следить за их работой.</li>
+                                  </strong>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="accordion-item">
+                            <h2 class="accordion-header">
+                              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#AccessRightsRedactor" aria-expanded="false" aria-controls="AccessRightsRedactor">
+                                Что может пользователь с правами «Редактор»?
+                              </button>
+                            </h2>
+                            <div id="AccessRightsRedactor" class="accordion-collapse collapse" data-bs-parent="#FaqAccessRights">
+                              <div class="accordion-body">
+                                <ul>
+                                  <strong>
+                                    <li>Выдавать права ниже по статусу.</li>
+                                    <li>Распределять кураторов по группам.</li>
+                                    <li>Отслеживать активность кураторов и следить за их работой.</li>
+                                  </strong>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="accordion-item">
+                            <h2 class="accordion-header">
+                              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#AccessRightsModerator" aria-expanded="false" aria-controls="AccessRightsModerator">
+                                Что может пользователь с правами «Модератор»?
+                              </button>
+                            </h2>
+                            <div id="AccessRightsModerator" class="accordion-collapse collapse" data-bs-parent="#FaqAccessRights">
+                              <div class="accordion-body">
+                                <ul>
+                                  <strong>
+                                    <li>Отслеживать активность кураторов и следить за их работой.</li>
+                                  </strong>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="accordion-item">
+                            <h2 class="accordion-header">
+                              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#AccessRightsUser" aria-expanded="false" aria-controls="AccessRightsUser">
+                                Что может пользователь с правами «Пользователь»?
+                              </button>
+                            </h2>
+                            <div id="AccessRightsUser" class="accordion-collapse collapse" data-bs-parent="#FaqAccessRights">
+                              <div class="accordion-body">
+                                <ul>
+                                  <strong>
+                                    <li>У данного вида прав отключён административный функционал.</li>
+                                  </strong>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="mb-3">
+                        </div>
+                        <div class="mb-3">
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal fade" id="modal_response_to_comment" tabindex="-1" aria-labelledby="response_to_comment" aria-hidden="true" data-bs-theme="dark">
+                  <div class="modal-dialog modal-dialog-centered">
+                      <div class="modal-content">
+                      <div class="modal-header">
+                      <h1 class="modal-title fs-5 text-decoration-none" id="response_to_comment"></h1>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                          <form id="form_response_to_comment">
+                              <input type="hidden" name="csrf_token" value='{{ csrf_token() }}'>
+                              <input type="hidden" class="response-to-comment-group-id" name="group_id" value=''>
+                              <input type="hidden" class="response-to-comment-post-id" name="post_id" value=''>
+                              <input type="hidden" class="response-to-comment-comment-id" name="comment_id" value=''>
+          
+                              <div class="mb-3">
+                                  <label for="input-text-response-to-comment" class="col-form-label text-white">Комментарий:</label>
+                                  <textarea class="form-control bg-dark-subtle" id="input-text-response-to-comment" name="comment_text" value="" minlength="1" placeholder="Введите текст своего комментария..."></textarea>
+                              </div>
+                              <div class="mb-3">
+                                  <label for="input-files-response-to-comment" class="form-label text-white">Скриншоты/видео:</label>
+                                  <input class="form-control bg-dark-subtle" type="file" id="input-files-response-to-comment" name="comment_attachments" accept=".jpg, .jpeg, .png, .mp4, .mov, .avi, .mpeg, .mp3, .flv, .wmv" multiple>
+                              </div>
+                              <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                                  <button type="submit" class="btn btn-outline-success" id="form_response_to_comment_button_submit">Отправить</button>
+                              </div>
+                          </form>
+                          <script>
+                              $(document).ready(function () {
+                                $("#form_response_to_comment").submit(function () {
+                                    // Получение ID формы
+                                    var formID = $(this).attr('id');
+                                    // Добавление решётки к имени ID
+                                    var formNm = $('#' + formID);
+                                    $.ajax({
+                                          type: "POST",
+                                          url: '/response_to_comment',
+                                          contentType: false,
+                                          processData: false,
+                                          data: new FormData(this),
+                                          beforeSend: function () {
+                                              $("#form_response_to_comment_button_submit").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Отправляю комментарий...');
+                                          },
+                                          success: function () {
+                                              $("#form_response_to_comment_button_submit").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Комментарий отправлен');
+                                              setTimeout(function() {
+                                                  document.getElementById("input-text-response-to-comment").value = "";
+                                                  $("#form_response_to_comment_button_submit").html('Ответить');
+                                              }, 500);
+                                              $("#modal_response_to_comment").modal('hide');
+                                              $('.modal-backdrop').remove();
+                                          },
+                                          error: function (error_msg) {
+                                              // Вывод текста ошибки отправки
+                                              $("#form_response_to_comment_button_submit").html('<span class="spinner-grow spinner-grow-sm text-danger" role="status" aria-hidden="true"></span>Ошибка отправки комментария');
+                                              setTimeout(function() {
+                                                  $("#form_response_to_comment_button_submit").html('Ответить');
+                                              }, 2500);
+                                          }
+                                    });
+                                    return false;
+                                });
+                            });
+                          </script>
+                      </div>
+                      </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

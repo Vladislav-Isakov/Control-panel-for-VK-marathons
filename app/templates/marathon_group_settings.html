@@ -1,0 +1,52 @@
+{% if group_settings.group_settings is defined %}
+<form id="form_setting_marathon_group">
+    <input type="hidden" name="csrf_token" value='{{ csrf_token() }}'>
+    <input type="hidden" name="group_id" value='{{ group_settings.group_id }}'>
+    <div class="mb-3">
+        <label for="input-sheet-name" class="col-form-label text-white">Название листа в таблице закреплённого за группой:</label>
+        <input type="text" class="form-control bg-dark-subtle" id="input-sheet-name" name="sheet_name" minlength="0" value="{% if group_settings.group_settings.sheet_name != None %}{{ group_settings.group_settings.sheet_name }}{% endif %}" placeholder="Название листа в таблице..." required>
+    </div>
+    <div class="text-end">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        <button type="submit" class="btn btn-outline-success" id="form_setting_marathon_group_button_submit">Сохранить</button>
+    </div>
+</form>
+<script>
+    $("#form_setting_marathon_group").submit(function () {
+        // Получение ID формы
+        var formID = $(this).attr('id');
+        // Добавление решётки к имени ID
+        var formNm = $('#' + formID);
+        $.ajax({
+            type: "POST",
+            url: '/edit_marathon_group_settings',
+            data: formNm.serialize(),
+            beforeSend: function () {
+                $("#form_setting_marathon_group_button_submit").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Сохраняю...');
+            },
+            success: function () {
+                $("#form_setting_marathon_group_button_submit").html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Настройки сохранены');
+                setTimeout(function() {
+                    document.getElementById("input-sheet-name").value = "";
+                    $("#form_setting_marathon_group_button_submit").html('Сохранить');
+                }, 500);
+                $("#modal_setting_marathon_group").modal('hide');
+                $('.modal-backdrop').remove();
+            },
+            error: function (error_msg) {
+                // Вывод текста ошибки отправки
+                $("#form_setting_marathon_group_button_submit").html('<span class="spinner-grow spinner-grow-sm text-danger" role="status" aria-hidden="true"></span>Ошибка сохранения настроек.');
+                setTimeout(function() {
+                    $("#form_setting_marathon_group_button_submit").html('Сохранить');
+                }, 2500);
+            }
+        });
+        return false;
+    });
+</script>
+{% else %}
+{# если возникла любая ошибка #}
+<div class="text-end">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+</div>
+{% endif %}

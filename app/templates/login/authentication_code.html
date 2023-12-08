@@ -1,0 +1,64 @@
+<form class="row g-3" id="login-user-authentication-code-form">
+    <div class="col-md-12">
+        <img src="{{ data_user['photo_200'] }}" class="img-thumbnail rounded-end-circle" alt="...">
+        <h5 class="card-title text-decoration-none"><a href="https://vk.com/id{{data_user['user_id']}}" class="text-decoration-none">{{ data_user['first_name'] }} {{ data_user['last_name'] }}</a></h5>
+    </div>
+    <label>Код из сообщения:</label>
+    <div class="col-md-2">
+        <input class="code-input form-control" id="code-number-form-1" pattern="[1-9]" type="tel" maxlength="1" tabindex="1" required>
+    </div>
+    <div class="col-md-2">
+        <input class="code-input form-control" id="code-number-form-2" pattern="[0-9]" type="tel" maxlength="1" tabindex="2" required>
+    </div>
+    <div class="col-md-2">
+        <input class="code-input form-control" id="code-number-form-3" pattern="[0-9]" type="tel" maxlength="1" tabindex="3" required>
+    </div>
+    <div class="col-md-2">
+        <input class="code-input form-control" id="code-number-form-4" pattern="[0-9]" type="tel" maxlength="1" tabindex="4" required>
+    </div>
+    <div class="col-md-2">
+        <input class="code-input form-control" id="code-number-form-5" pattern="[0-9]" type="tel" maxlength="1" tabindex="5" required>
+    </div>
+    <div class="col-md-2">
+        <input class="code-input form-control" id="code-number-form-6" pattern="[0-9]" type="tel" maxlength="1" tabindex="6" required>
+    </div>
+    <button class="w-100 btn btn-lg btn-primary mt-2" type="submit">Отправить</button>
+</form>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script>
+    $('.code-input').on('keydown', function(e) {
+    let value = $(this).val();
+    let len = value.length;
+    let curTabIndex = parseInt($(this).attr('tabindex'));
+    let nextTabIndex = curTabIndex + 1;
+    let prevTabIndex = curTabIndex - 1;
+    if (len > 0) {
+        $(this).val(value.substr(0, 1));
+        $('[tabindex=' + nextTabIndex + ']').focus();
+    } else if (len == 0 && prevTabIndex !== 0) {
+        $('[tabindex=' + prevTabIndex + ']').focus();
+    }
+    });
+</script>
+<script>
+  $(document).ready(function () {
+    $("#login-user-authentication-code-form").submit(function () {
+        // Получение ID формы
+        var formID = $(this).attr('id');
+        // Добавление решётки к имени ID
+        var formNm = $('#' + formID);
+        $.ajax({
+          type: "POST",
+          url: "/login",
+          data: {'csrf_token': '{{ csrf_token() }}', 'method': 'entering_code', 'authentication_code': document.getElementById('code-number-form-1').value + document.getElementById('code-number-form-2').value + document.getElementById('code-number-form-3').value + document.getElementById('code-number-form-4').value + document.getElementById('code-number-form-5').value + document.getElementById('code-number-form-6').value},
+          success: function (response) {
+            window.location.reload();
+          },
+          error: function () {
+            // Вывод текста ошибки отправки
+          }
+        });
+        return false;
+    });
+});
+</script>

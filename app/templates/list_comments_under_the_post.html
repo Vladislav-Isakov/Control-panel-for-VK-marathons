@@ -1,0 +1,186 @@
+{% if list_comments[0] == [] %}
+<div class="container-fluid bg-dark">
+    <div class="d-flex user-select-none pt-3">
+        <p class="pb-3 mb-0 text-center text-light fw-bold lh-sm border-bottom w-100">
+           Комментарии под постом не обнаружены.
+        </p>
+    </div>
+</div>
+{% else %}
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            {% for page in range(list_comments[2].count_page) %}
+                <li class="page-item m-1">
+                    <button type="button" class="page-link btn btn-primary" onclick="GetComments({{ list_comments[0][0]['group_id'] }}, {{ list_comments[0][0]['comment_post_id'] }}, {{ loop.index }})"><strong>{{ loop.index }}</strong></button>
+                </li>
+            {% endfor %}
+        </ul>
+    </nav>
+    {% for comment in list_comments[0] %}
+    <div class="d-flex pt-3 border-bottom border-primary pb-4">
+        <img src="{% if comment['commentator_data']['user_photo_200'] is defined %}{{ comment['commentator_data']['user_photo_200'] }}{% else %}{{ comment['commentator_data']['group_photo_200'] }}{% endif %}" width="52" height="52" class="bd-placeholder-img flex-shrink-0 me-2 rounded-circle" alt="...">
+        <small class="d-block text-start p-0 text-light">
+            <a href="{% if comment['commentator_data']['user_vk_link'] is defined %}{{ comment['commentator_data']['user_vk_link'] }}{% else %}{{ comment['commentator_data']['group_vk_link'] }}{% endif %}" class="text-decoration-none fw-bold">
+                {% if comment['commentator_data']['user_first_name'] is defined and comment['commentator_data']['user_last_name'] is defined %}
+                    {{ comment['commentator_data']['user_first_name'] }} {{ comment['commentator_data']['user_last_name'] }}
+                {% else %}
+                    {{ comment['commentator_data']['group_name'] }}
+                {% endif %}
+            </a>
+            {% if comment['commentator_data']['user_id'] is defined %}
+                {% if table_settings['column_tasks'] == True %}
+                    <div class="btn-group-vertical btn-group-sm" role="group" aria-label="Small button group">
+                        {% for task in range(1, table_settings['column_number_of_tasks']+1) %}
+                            {% if list_comments[1][comment.commentator_data.user_id] is defined %}
+                                {% if list_comments[1][comment.commentator_data.user_id][task] is defined %}
+                                    {% if list_comments[1][comment.commentator_data.user_id][task]['task_status'] == 'Сделано' %}
+                                        <button type="button" class="btn btn-success fw-bold">
+                                            Задание #{{ task }}: Сделано
+                                        </button>
+                                    {% elif list_comments[1][comment.commentator_data.user_id][task]['task_status'] == 'В процессе' %}
+                                        <button type="button" class="btn btn-warning fw-bold">
+                                            Задание #{{ task }}: В процессе
+                                        </button>
+                                    {% else %}
+                                        <button type="button" class="btn btn-danger fw-bold">
+                                            Задание #{{ task }}: Не выполнено
+                                        </button>
+                                    {% endif %}
+                                {% else %}
+                                    <button type="button" class="btn btn-danger fw-bold">
+                                        Задание #{{ task }}: Не выполнено
+                                    </button>
+                                {% endif %}
+                            {% else %}
+                                <button type="button" class="btn btn-danger fw-bold">
+                                    Задание #{{ task }}: Не выполнено
+                                </button>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endif %}
+            <br />
+            <div class="user-select-auto p-1">
+                {{ comment['comment_text'] | safe }}
+                {% if comment['comment_attachments'] != [] %}
+                    <div id="Attachments_{{ comment['comment_post_id'] }}_{{ comment['comment_id'] }}_{{ comment['comment_from_id'] }}" class="carousel slide">
+                        <div class="carousel-inner">
+                            {% for attachment in comment['comment_attachments'] %}
+                                {% if loop.index == 1 %}
+                                    <div class="carousel-item active">
+                                {% else %}
+                                    <div class="carousel-item">
+                                {% endif %}
+                                        {% if attachment['type'] == 'photo' %}
+                                            <img src="{{ attachment['photo']['sizes'][-1]['url'] }}" style="max-width: 100%; height: auto;" class="d-block w-100 rounded" alt="...">
+                                        {% elif attachment['type'] == 'video' %}
+                                            <video controls>
+                                                <source src="https://vk.com/video{{ attachment['video']['user_id'] }}_{{ attachment['video']['id'] }}_{{ attachment['video']['access_key'] }}">
+                                            </video>
+                                        {% elif attachment['type'] == 'doc' and attachment['doc']['ext'] == 'gif' %}
+                                            <img src="https://vk.com/doc{{ attachment['doc']['owner_id'] }}_{{ attachment['doc']['id'] }}" style="max-width: 100%; height: auto;" class="d-block w-100" alt="...">
+                                        {% endif %}
+                                    </div>
+                            {% endfor %}
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#Attachments_{{ comment['comment_post_id'] }}_{{ comment['comment_id'] }}_{{ comment['comment_from_id'] }}" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Назад</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#Attachments_{{ comment['comment_post_id'] }}_{{ comment['comment_id'] }}_{{ comment['comment_from_id'] }}" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Вперёд</span>
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="badge bg-primary text-wrap user-select-none" style="width: 8rem;">
+                {{ comment['comment_date'] }}
+            </div>
+            <button class="btn btn-sm btn-link" type="button" data-bs-toggle="collapse" id="button_get_comment_thread_{{ comment['comment_id'] }}" onclick="GetCommentThread({{ comment['group_id'] }}, {{ comment['comment_post_id'] }}, {{ comment['comment_id'] }}, this.id, 'comment_thread_under_the_post_{{ comment.comment_id }}');" data-bs-target="#comment_thread_under_the_post_{{ comment['comment_id'] }}" aria-expanded="false" aria-controls="comment_thread_under_the_post_{{ comment['comment_id'] }}">
+                Ветка комментария
+            </button>
+            <button class="btn btn-sm btn-link" type="button" id="button_response_to_comment_{{ comment['comment_id'] }}" data-bs-toggle="modal" data-bs-target="#modal_response_to_comment" data-bs-group-id="{{ comment['group_id'] }}" data-bs-post-id="{{ comment['comment_post_id'] }}" data-bs-comment-id="{{ comment['comment_id'] }}" data-bs-whatever="{% if comment['commentator_data']['user_first_name'] is defined and comment['commentator_data']['user_last_name'] is defined %}{{ comment['commentator_data']['user_first_name'] }} {{ comment['commentator_data']['user_last_name'] }}{% else %}{{ comment['commentator_data']['group_name'] }}{% endif %}">
+                Ответить
+            </button>
+            {% if comment['commentator_data']['user_id'] is defined %}
+                <div class="btn-group">
+                    <button class="btn btn-sm btn-link dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                        Действие
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark">
+                        {% if table_settings['column_tasks'] == True %}
+                            <div class="btn-group d-flex justify-content-center dropend">
+                                <button type="button" class="btn dropdown-toggle text-white fw-semibold" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                    Статус задания
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-dark">
+                                    {% for task in range(1, table_settings['column_number_of_tasks']+1) %}
+                                        <li>
+                                            <div class="dropdown-item btn-group d-flex justify-content-center dropend">
+                                                <button type="button" class="btn dropdown-toggle text-white fw-semibold" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                                    Задание #{{ task }}
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-dark">
+                                                    <li><button type="button" class="btn btn-success dropdown-item" id="button-change-task-status-{{ comment['commentator_data']['user_id'] }}-{{ task }}-{{ comment['comment_id'] }}-done" onclick="ChangingTaskStatus({{ table_settings['group_id'] }}, {{ comment['commentator_data']['user_id'] }}, {{ task }}, 'Сделано', this.id, {{ comment['comment_post_id'] }}, {{ comment['comment_id'] }})">Сделано</button></li>
+                                                    <li><button type="button" class="btn btn-warning dropdown-item" id="button-change-task-status-{{ comment['commentator_data']['user_id'] }}-{{ task }}-{{ comment['comment_id'] }}-in-progress" onclick="ChangingTaskStatus({{ table_settings['group_id'] }}, {{ comment['commentator_data']['user_id'] }}, {{ task }}, 'В процессе', this.id, {{ comment['comment_post_id'] }}, {{ comment['comment_id'] }})">В процессе</button></li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </ul>
+                </div>
+            {% endif %}
+            <div class="collapse" id="comment_thread_under_the_post_{{ comment['comment_id'] }}">
+            </div>
+        </small>
+    </div>
+    {% endfor %}
+    <script>
+        function ChangingTaskStatus(group_id, user_id, task_number, task_status, button_jd, post_id, comment_id){
+            if (group_id == ''){
+            return;
+            }
+            if (user_id == ''){
+            return;
+            }
+            if (task_number == ''){
+            return;
+            }
+            if (task_status == ''){
+            return;
+            }
+            if (post_id == '') {
+            return;
+            }
+            if (comment_id == '') {
+            return;
+            }
+            $.ajax({
+            type: "POST",
+            url: '/edit_task_status',
+            data: {'csrf_token': '{{ csrf_token() }}', 'group_id': group_id, 'user_id': user_id, 'task_number': task_number, 'task_status': task_status, 'post_id': post_id, 'comment_id': comment_id},
+            beforeSend: function () {
+                $("#" + button_jd).html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Изменение статуса...');
+            },
+            success: function () {
+                $("#" + button_jd).html('<span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>Статус изменён');
+                setTimeout(function() {
+                $("#" + button_jd).html(task_status);
+                }, 1500);
+            },
+            error: function () {
+                $("#" + button_jd).html('<span class="spinner-grow spinner-grow-sm text-danger" role="status" aria-hidden="true"></span>Ошибка изменения');
+                setTimeout(function() {
+                $("#" + button_jd).html(task_status);
+                }, 2500);
+            }
+            });
+            return false;
+        }
+    </script>
+{% endif %}

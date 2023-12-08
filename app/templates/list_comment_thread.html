@@ -1,0 +1,65 @@
+{% if list_comments == [] %}
+<div class="container-fluid bg-dark">
+    <div class="d-flex user-select-none pt-3">
+        <p class="pb-3 mb-0 text-center text-light fw-bold lh-sm border-bottom w-100">
+           Комментарии в ветке данного комментария не обнаружены.
+        </p>
+    </div>
+</div>
+{% else %}
+{% for comment in list_comments %}
+<div class="d-flex pt-3 border-bottom pb-3 position-relative" style="margin-left: 40px; margin-right: 20px;">
+    <img src="{% if comment['commentator_data']['user_photo_200'] is defined %}{{ comment['commentator_data']['user_photo_200'] }}{% else %}{{ comment['commentator_data']['group_photo_200'] }}{% endif %}" width="52" height="52" class="bd-placeholder-img flex-shrink-0 me-2 rounded-circle" alt="...">
+    <small class="d-block text-start p-0 text-light">
+        <a href="{% if comment['commentator_data']['user_vk_link'] is defined %}{{ comment['commentator_data']['user_vk_link'] }}{% else %}{{ comment['commentator_data']['group_vk_link'] }}{% endif %}" class="text-decoration-none fw-bold" style="font-size: 14px;">
+            {% if comment['commentator_data']['user_first_name'] is defined and comment['commentator_data']['user_last_name'] is defined %}
+                {{ comment['commentator_data']['user_first_name'] }} {{ comment['commentator_data']['user_last_name'] }}
+            {% else %}
+                {{ comment['commentator_data']['group_name'] }}
+            {% endif %}
+        </a>
+        <br />
+        <div class="user-select-auto p-2" style="font-size: 14px;">
+            {{ comment['comment_text'] | safe }}
+            {% if comment['comment_attachments'] != [] %}
+                <div id="Attachments_{{ comment['comment_post_id'] }}_{{ comment['comment_id'] }}_{{ comment['comment_from_id'] }}" class="carousel slide">
+                    <div class="carousel-inner">
+                        {% for attachment in comment['comment_attachments'] %}
+                            {% if loop.index == 1 %}
+                                <div class="carousel-item active">
+                            {% else %}
+                                <div class="carousel-item">
+                            {% endif %}
+                                    {% if attachment['type'] == 'photo' %}
+                                        <img src="{{ attachment['photo']['sizes'][-1]['url'] }}" style="max-width: 100%; height: auto;" class="d-block w-100 rounded" alt="...">
+                                    {% elif attachment['type'] == 'video' %}
+                                        <video controls>
+                                            <source src="https://vk.com/video{{ attachment['video']['user_id'] }}_{{ attachment['video']['id'] }}_{{ attachment['video']['access_key'] }}">
+                                        </video>
+                                    {% elif attachment['type'] == 'doc' and attachment['doc']['ext'] == 'gif' %}
+                                        <img src="https://vk.com/doc{{ attachment['doc']['owner_id'] }}_{{ attachment['doc']['id'] }}" style="max-width: 100%; height: auto;" class="d-block w-100" alt="...">
+                                    {% endif %}
+                                </div>
+                        {% endfor %}
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#Attachments_{{ comment['comment_post_id'] }}_{{ comment['comment_id'] }}_{{ comment['comment_from_id'] }}" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Назад</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#Attachments_{{ comment['comment_post_id'] }}_{{ comment['comment_id'] }}_{{ comment['comment_from_id'] }}" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Вперёд</span>
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+        <div class="badge bg-primary text-wrap user-select-none" style="width: 8rem;">
+            {{ comment['comment_date'] }}
+        </div>
+        <button class="btn btn-sm btn-link" type="button" id="button_response_to_comment_{{ comment['comment_id'] }}" data-bs-toggle="modal" data-bs-target="#modal_response_to_comment" data-bs-group-id="{{ comment['group_id'] }}" data-bs-post-id="{{ comment['post_id'] }}" data-bs-comment-id="{{ comment['comment_id'] }}" data-bs-whatever="{% if comment['commentator_data']['user_first_name'] is defined and comment['commentator_data']['user_last_name'] is defined %}{{ comment['commentator_data']['user_first_name'] }} {{ comment['commentator_data']['user_last_name'] }}{% else %}{{ comment['commentator_data']['group_name'] }}{% endif %}">
+            Ответить
+        </button>
+    </small>
+</div>
+{% endfor %}
+{% endif %}
